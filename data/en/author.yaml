@@ -14,6 +14,6 @@ contactInfo:
 summary:
   - I am a full stack web developer
   - I love the command line
-  - I love servers
+  # - I love servers
   - I work on open-source projects
   - I love to work with fun, intriguing projects
