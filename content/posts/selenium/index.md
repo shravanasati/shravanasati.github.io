@@ -22,7 +22,7 @@ We'll be using the awesome [selenium](https://www.selenium.dev/) library for thi
 
 ## Prerequisites
 
-Just intermediate-level knowledge of Python. That's all. I'll be explaining selenium along the way. This is essentially a selenium tutorial since I love project-based learning.
+Just intermediate-level knowledge of Python and HTML tags. That's all. I'll be explaining selenium along the way. This is essentially a selenium tutorial since I love project-based learning.
 
 {{< vs 3 >}}
 
