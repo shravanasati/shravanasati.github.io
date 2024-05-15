@@ -4,3 +4,10 @@
 
 
 Personal portfolio and blog website powered by Hugo and the Toha theme.
+
+
+### Running the website locally
+
+```
+hugo server -w
+```

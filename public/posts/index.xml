@@ -6,10 +6,10 @@
     <description>Recent content in Posts on Shravan Asati</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 26 Apr 2023 08:06:25 +0530</lastBuildDate><atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" /><item>
+    <lastBuildDate>Thu, 16 May 2024 00:32:25 +0530</lastBuildDate><atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" /><item>
       <title>Achieving Infinite WPM in MonkeyType using Python</title>
       <link>http://localhost:1313/posts/selenium/</link>
-      <pubDate>Wed, 26 Apr 2023 08:06:25 +0530</pubDate>
+      <pubDate>Thu, 16 May 2024 00:32:25 +0530</pubDate>
       
       <guid>http://localhost:1313/posts/selenium/</guid>
       <description>So I have this one friend who constantly boasts about his sub-200 WPM typing speed. I tried competing with him but couldn&amp;rsquo;t manage it above 100 WPM. I decided it was not worth the effort since I could beat him with the help of Python! :)
