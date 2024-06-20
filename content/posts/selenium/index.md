@@ -10,7 +10,7 @@ menu:
 author:
   name: Shravan Asati
   image: /images/author/shravan.png
-math: true
+math: false
 hero: hero.png
 ---
 
