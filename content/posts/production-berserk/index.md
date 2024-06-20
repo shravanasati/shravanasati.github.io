@@ -180,6 +180,8 @@ And this time, fr, the server started.
 
 I started the animeviz service too. Visited animeviz.ninja. It was live. After an hour.
 
+One thing, which still remains a mystery is what caused the mysql server upgrade. Was it scheduled, or triggered by someone (😨), or mysql suddenly decided it wants to upgrade? I'd appreciate if some subject expert helped me resolve this question.
+
 
 ## Bye
 
