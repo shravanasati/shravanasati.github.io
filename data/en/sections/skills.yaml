@@ -35,14 +35,15 @@ skills:
 #   logo: /images/sections/skills/cloud.png
 #   summary: "Worked with most of the major clouds such as GCP, AWS, Azure etc."
 
-# - name: Docker
-#   logo: /images/sections/skills/docker.svg
-#   summary: "Write most of the programs as dockerized container. Experienced with multi-stage, multi-arch build process."
-#   url: "https://www.docker.com/"
+- name: Docker
+  logo: /images/sections/skills/docker.svg
+  summary: "Deployment is easy with a dockerized container. Experienced with multi-stage build process."
+  url: "https://www.docker.com/"
 
 - name: Linux
   logo: /images/sections/skills/linux.png
   summary: "Been using it in form of WSL since last 3 years. Hosted animeviz on a Ubuntu VPS."
+  url: https://www.kernel.org/
 
 - name: Git
   logo: /images/sections/skills/git.png
@@ -52,3 +53,4 @@ skills:
 - name: C++
   logo: /images/sections/skills/c++.png
   summary: "Know basic C/C++ programming. Used for contest programming and problem solving."
+  url: https://isocpp.org/

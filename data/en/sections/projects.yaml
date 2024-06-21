@@ -30,6 +30,14 @@ projects:
   summary: A simple website to draw visualizations over your animelists.
   tags: ["pandas", "matplotlib", "python", "flask", "picocss", "mysql","javascript", "api"]
 
+- name: squirrel
+  role: Co-Developer
+  timeline: "April 2024"
+  repo: https://github.com/shravanasati/squirrel
+  summary: A context-aware AI SQL query builder and executor.
+  tags: ["llm", "ai", "python", "flask", "tailwind", "mysql", "javascript", "ollama"]
+
+
 - name: titan-url
   # logo: /images/sections/projects/tensorflow.png
   role: Owner
@@ -38,6 +46,7 @@ projects:
   url: "https://titanurl.vercel.app"
   summary: A no-fuss URL shortener, with a public API. It has a terminal client too.
   tags: ["python", "flask", "postgres", "vercel", "nodejs", "tailwindcss", "javascript"]
+  # todo add squirrel and emozi website
 
 - name: iris
   role: Developer
@@ -56,6 +65,13 @@ projects:
   summary: Feature-rich command-line benchmarking tool, written in Go.
   tags: ["go", "cli"]
 
+- name: emozi
+  role: Developer
+  timeline: June 2023 - June 2024
+  url: "https://coral-app-b9pj6.ondigitalocean.app/"
+  summary: An emojipasta generator web interface, as well as a CLI. I also maintain the Go library which accomplishes emojipasta generation.
+  tags: ["go", "library", "cli", "react", "typescript", "web", "docker", "tailwind"]
+
 - name: stellapy
   # logo: /images/sections/projects/toha.png
   role: Developer
@@ -72,23 +88,16 @@ projects:
   summary: A lightweight and cross-platform python library to record screen.
   tags: ["python", "library", "opencv"]
 
-- name: projectile motion simulator
-  role: Developer
-  timeline: June 2023 - July 2023
-  repo: "https://github.com/shravanasati/projectile-motion-simulator"
-  summary: A python script that simulates the ground-to-ground projectile motion of a circular object, with varying parameters like gravitational acceleration, initial velocity and the angle of projection.
-  tags: ["python", "pygame", "physics", "simulation"]
-
-- name: emozi
-  role: Developer
-  timeline: July 2023 - August 2023
-  repo: "https://github.com/shravanasati/emozi"
-  summary: An emojipasta generator CLI - there's also an Go emojipasta library for you to use.
-  tags: ["go", "library", "cli"]
-
 - name: crusade
   role: Developer
   timeline: Feb 2024 - Present
   repo: "https://github.com/shravanasati/crusade"
   summary: A friendly math interpreter.
   tags: ["c++", "data structures"]
+
+# - name: projectile motion simulator
+#   role: Developer
+#   timeline: June 2023 - July 2023
+#   repo: "https://github.com/shravanasati/projectile-motion-simulator"
+#   summary: A python script that simulates the ground-to-ground projectile motion of a circular object, with varying parameters like gravitational acceleration, initial velocity and the angle of projection.
+#   tags: ["python", "pygame", "physics", "simulation"]
