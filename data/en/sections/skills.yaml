@@ -18,7 +18,7 @@ skills:
 
 - name: Python
   logo: /images/sections/skills/python.png
-  summary: "Python is my bread and butter. I am capable to writing servers, CLI tools, data science, automation scripts, tests in it."
+  summary: "Python is my bread and butter. I am capable of writing servers, CLI tools, data science, automation scripts, tests in it."
   url: "https://python.org"
 
 - name: Go
@@ -30,6 +30,16 @@ skills:
   logo: /images/sections/skills/javascript.svg
   summary: "Capable of writing interactive frontend websites."
   url: "https://developer.mozilla.org/en-US/docs/Web/Javascript"
+
+- name: React
+  logo: /images/sections/skills/react.svg
+  summary: "Capable of writing efficient react apps."
+  url: "https://react.dev"
+
+- name: SQL
+  logo: /images/sections/skills/sql.png
+  summary: "Experienced with MySQL and PostgreSQL."
+  url: "https://www.mysql.com/"
 
 # - name: Cloud Computing
 #   logo: /images/sections/skills/cloud.png
