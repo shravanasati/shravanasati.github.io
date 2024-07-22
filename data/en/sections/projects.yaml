@@ -46,7 +46,6 @@ projects:
   url: "https://titanurl.vercel.app"
   summary: A no-fuss URL shortener, with a public API. It has a terminal client too.
   tags: ["python", "flask", "postgres", "vercel", "nodejs", "tailwindcss", "javascript"]
-  # todo add squirrel and emozi website
 
 - name: iris
   role: Developer

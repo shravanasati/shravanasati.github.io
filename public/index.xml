@@ -17,6 +17,15 @@ One such time was the fine summer morning of 13th June 2024. I woke up late and 
     </item>
     
     <item>
+      <title>Understanding and breaking the Caesar cipher</title>
+      <link>http://localhost:1313/posts/caesar-cipher/</link>
+      <pubDate>Thu, 20 Jun 2024 18:00:02 +0530</pubDate>
+      
+      <guid>http://localhost:1313/posts/caesar-cipher/</guid>
+      <description>The caesar cipher is one the oldest known ciphers known to mankind. As the story goes, the Roman emperor Julius Caesar used it extensively for military communications. It is a simple substitution cipher</description>
+    </item>
+    
+    <item>
       <title>Achieving Infinite WPM in MonkeyType using Python</title>
       <link>http://localhost:1313/posts/selenium/</link>
       <pubDate>Thu, 16 May 2024 00:32:25 +0530</pubDate>
