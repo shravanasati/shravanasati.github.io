@@ -30,8 +30,8 @@
   <meta property="og:locale" content="en">
   <meta property="og:type" content="article">
   <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2024-07-20T18:00:02+05:30">
-    <meta property="article:modified_time" content="2024-07-20T18:00:02+05:30">
+    <meta property="article:published_time" content="2024-08-16T18:00:02+05:30">
+    <meta property="article:modified_time" content="2024-08-16T18:00:02+05:30">
 
     <meta name="twitter:card" content="summary"><meta name="twitter:title" content="Understanding and breaking the Caesar cipher">
 <meta name="twitter:description" content="Caesar cipher is classic substitution cipher. We will learn how to encrypt text using it, and how to break it without knowing the shift.">
@@ -368,7 +368,7 @@
         <div class="author-profile ms-auto align-self-lg-center">
           <img class="rounded-circle" src='/images/author/shravan_hu723175651ee0a89b854711a46a667009_4543508_120x120_fit_box_3.png' alt="Author Image">
           <h5 class="author-name">Shravan Asati</h5>
-          <p class="text-muted">Saturday, July 20, 2024 | 1 minute</p>
+          <p class="text-muted">Friday, August 16, 2024 | 3 minutes</p>
         </div>
         
         
@@ -389,8 +389,103 @@
         <div class="post-content" id="post-content">
           <p>The caesar cipher is one the oldest known ciphers known to mankind. As the story goes, the Roman emperor Julius Caesar used it extensively for military communications. It is a simple <a href="https://en.wikipedia.org/wiki/Substitution_cipher" target="_blank" rel="noopener">substitution cipher</a> and is not fit for any modern usage, since it is a trivial task to break it. However, it may be worthwhile to learn the roots of cryptography, as this cipher leads to more advanced ones like the Vigènere cipher and the unbreakable one-time pad cipher. We&rsquo;ll learn how to implement Caesar cipher in Python, and how to break it without knowing the shift involved, using frequency analysis and some statistics. That being said, I am neither a cryptanalyst nor a statistician, so pardon me for any mistakes.</p>
 <h2 id="theory">Theory</h2>
+<p>Let&rsquo;s first understand how the Caesar cipher actually works. Let the text we need to encrypt be <code>hello world</code>. If we assume the shift to be 3, we need to replace each character with a character which is 3 offsets ahead in the alphabets.</p>
+<p>So, this is show each character will be transformed.</p>
+<pre tabindex="0"><code>h (+3) -&gt; k
+e (+3) -&gt; h
+l (+3) -&gt; o
+l (+3) -&gt; o
+o (+3) -&gt; r
+  
+w (+3) -&gt; z
+o (+3) -&gt; r
+r (+3) -&gt; u
+l (+3) -&gt; o
+d (+3) -&gt; g
+</code></pre><div style="margin-top: 1rem;"></div>
+<p>It is very simple - all it doing is shifting the characters. If we encounter the end of the alphabets, i.e., <code>z</code>, we circle around and continue from <code>a</code>.</p>
+<img src="/posts/caesar-cipher/theory.png"
+    
+        alt="an image visualizing caesar cipher"
+    
+    
+    
+    
+    
+>
+
+<div style="margin-top: 1rem;"></div>
+<blockquote>
+<p><em>Image Credits: GeeksForGeeks</em></p>
+</blockquote>
+<p>The formula is essentially:
+$$
+C = (p + shift)  mod  (26)
+$$</p>
+<p>where,</p>
+<p><code>C</code> is the ciphered character,</p>
+<p><code>p</code> is the character that needs to be ciphered,</p>
+<p><code>shift</code> is the amount of shfit.</p>
 <h2 id="implementation">Implementation</h2>
-<h2 id="breaking-the-cipher">Breaking the Cipher</h2>
+<p>Now let&rsquo;s dive into implementing this <em>encryption</em> scheme in Python.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CaesarCipher</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, shift: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">11</span>) <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>shift <span style="color:#f92672">=</span> shift
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>keys_upper <span style="color:#f92672">=</span> string<span style="color:#f92672">.</span>ascii_uppercase
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>keys_lower <span style="color:#f92672">=</span> string<span style="color:#f92672">.</span>ascii_lowercase
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__perform_shift</span>(self, text: str, positive: bool) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> positive:
+</span></span><span style="display:flex;"><span>            shift <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>shift
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            shift <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>self<span style="color:#f92672">.</span>shift
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        shifted_text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> char <span style="color:#f92672">in</span> text:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> char<span style="color:#f92672">.</span>isupper():
+</span></span><span style="display:flex;"><span>                to_consider <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>keys_upper
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">elif</span> char<span style="color:#f92672">.</span>islower():
+</span></span><span style="display:flex;"><span>                to_consider <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>keys_lower
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>                shifted_text <span style="color:#f92672">+=</span> char
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            index <span style="color:#f92672">=</span> to_consider<span style="color:#f92672">.</span>index(char)
+</span></span><span style="display:flex;"><span>            index <span style="color:#f92672">+=</span> shift
+</span></span><span style="display:flex;"><span>            index <span style="color:#f92672">%=</span> <span style="color:#ae81ff">26</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            shifted_text <span style="color:#f92672">+=</span> to_consider[index]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> shifted_text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">encrypt</span>(self, text: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        encrypted_text <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>__perform_shift(text, <span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> encrypted_text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decrypt</span>(self, text: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>        decrypted_text <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>__perform_shift(text, <span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> decrypted_text
+</span></span></code></pre></div><div style="margin-top: 1rem;"></div>
+<p>That might look a little overwhelming at first, but it&rsquo;s quite easy once you look at it.</p>
+<p>To summarise, we&rsquo;ve defined a class called <code>CaesarCipher</code>, each instance of whom will work with a specific shift. Since decryption in caesar cipher is virtually the same as encryption (except we just need to shift in reverse), I&rsquo;ve defined a single function which takes two arguments, the text to shift and and a boolean parameter named <code>positive</code> which will decide whether to shift forward or backward.</p>
+<p>Once that&rsquo;s done, we loop through the given text and first determine whether each character is in upper-case or lower-case. After that, it&rsquo;s just a matter of using the formula mentioned above and adding the shifted character to the <code>shifted_text</code>. Also, I&rsquo;m ignoring any other character encountered in the given text and adding it as it is.</p>
+<p>Let&rsquo;s test it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    cipher <span style="color:#f92672">=</span> CaesarCipher()
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Caesar Cipher isn&#39;t useful at all nowadays. It can be easily broken.&#34;</span>
+</span></span><span style="display:flex;"><span>    encrypted <span style="color:#f92672">=</span> cipher<span style="color:#f92672">.</span>encrypt(text)
+</span></span><span style="display:flex;"><span>    print(encrypted)
+</span></span><span style="display:flex;"><span>    decrypted <span style="color:#f92672">=</span> cipher<span style="color:#f92672">.</span>decrypt(encrypted)
+</span></span><span style="display:flex;"><span>    print(decrypted)
+</span></span></code></pre></div><div style="margin-top: 1rem;"></div>
+<p>This is the output of the program.</p>
+<pre tabindex="0"><code>Nlpdlc Ntaspc tdy&#39;e fdpqfw le lww yzhloljd. Te nly mp pldtwj mczvpy.
+Caesar Cipher isn&#39;t useful at all nowadays. It can be easily broken.
+</code></pre><h2 id="breaking-the-cipher">Breaking the Cipher</h2>
 
         </div>
 
