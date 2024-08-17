@@ -368,7 +368,7 @@
         <div class="author-profile ms-auto align-self-lg-center">
           <img class="rounded-circle" src='/images/author/shravan_hu723175651ee0a89b854711a46a667009_4543508_120x120_fit_box_3.png' alt="Author Image">
           <h5 class="author-name">Shravan Asati</h5>
-          <p class="text-muted">Friday, August 16, 2024 | 3 minutes</p>
+          <p class="text-muted">Friday, August 16, 2024 | 6 minutes</p>
         </div>
         
         
@@ -472,7 +472,7 @@ $$</p>
 </span></span></code></pre></div><div style="margin-top: 1rem;"></div>
 <p>That might look a little overwhelming at first, but it&rsquo;s quite easy once you look at it.</p>
 <p>To summarise, we&rsquo;ve defined a class called <code>CaesarCipher</code>, each instance of whom will work with a specific shift. Since decryption in caesar cipher is virtually the same as encryption (except we just need to shift in reverse), I&rsquo;ve defined a single function which takes two arguments, the text to shift and and a boolean parameter named <code>positive</code> which will decide whether to shift forward or backward.</p>
-<p>Once that&rsquo;s done, we loop through the given text and first determine whether each character is in upper-case or lower-case. After that, it&rsquo;s just a matter of using the formula mentioned above and adding the shifted character to the <code>shifted_text</code>. Also, I&rsquo;m ignoring any other character encountered in the given text and adding it as it is.</p>
+<p>Once that&rsquo;s done, we loop through the given text and first determine whether each character is in upper-case or lower-case. After that, it&rsquo;s just a matter of using the formula mentioned above and adding the shifted character to the <code>shifted_text</code>. Also, I&rsquo;m ignoring any non-alphabetic character encountered in the given text and adding it as it is.</p>
 <p>Let&rsquo;s test it.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
 </span></span><span style="display:flex;"><span>    cipher <span style="color:#f92672">=</span> CaesarCipher()
@@ -486,6 +486,135 @@ $$</p>
 <pre tabindex="0"><code>Nlpdlc Ntaspc tdy&#39;e fdpqfw le lww yzhloljd. Te nly mp pldtwj mczvpy.
 Caesar Cipher isn&#39;t useful at all nowadays. It can be easily broken.
 </code></pre><h2 id="breaking-the-cipher">Breaking the Cipher</h2>
+<p>Now things get interesting. The idea behind breaking the cipher, without knowing the shift is easy - we know that there are only 26 possible shifts. We can brute-force through all the shifts very quickly and determine which sentence looks like actual English, and not just some random mumblings.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CaesarDecipher</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, ciphered_text: str) <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>ciphered_text <span style="color:#f92672">=</span> ciphered_text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decipher</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># brute force through all shifts</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> shift <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">27</span>):
+</span></span><span style="display:flex;"><span>            print(shift, CaesarCipher(shift)<span style="color:#f92672">.</span>decrypt(self<span style="color:#f92672">.</span>ciphered_text))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Caesar Cipher isn&#39;t useful at all nowadays. It can be easily broken.&#34;</span>
+</span></span><span style="display:flex;"><span>    enc <span style="color:#f92672">=</span> CaesarCipher(<span style="color:#ae81ff">21</span>)<span style="color:#f92672">.</span>encrypt(text)
+</span></span><span style="display:flex;"><span>    CaesarDecipher(enc)<span style="color:#f92672">.</span>decipher()
+</span></span></code></pre></div><div style="margin-top: 1rem;"></div>
+<p>This works, but looking through all those shifted texts is still a pain. What if we could come up with a method to show, maybe the 5 most senseful transformations?</p>
+<p>Enter frequency analysis.</p>
+<p>The English language is biased towards certain letters. Those letters appear more often than their peers.
+Prime examples of such letters are <code>e</code>, <code>t</code>, <code>a</code>, <code>o</code> and so on. This cipher, by shifting the letters, also shifts their usage proportions.</p>
+<img src="/posts/caesar-cipher/bar_chart.png"
+    
+        alt="an image depicting a bar graph of english letter usage"
+    
+    
+    
+    
+    
+>
+
+<div style="margin-top: 1rem;"></div>
+<p>This bar chart shows the percentage appearance of each letter in English texts. When the caesar cipher is applied, this chart is also translated sideways by the amount of shift.</p>
+<p>Thus, we need to find the shift in the chart (i.e., usage proportions), and by reversing the shift we&rsquo;ll arrive at the original text.</p>
+<p>Let&rsquo;s code that now.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> heapq
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> string
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> ciphers <span style="color:#f92672">import</span> CaesarCipher
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> scipy.stats
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CaesarDecipher</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> __init__(self, ciphered_text: str) <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>ciphered_text <span style="color:#f92672">=</span> ciphered_text
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># taken from https://norvig.com/mayzner.html</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>freq_table <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;e&#34;</span>: <span style="color:#ae81ff">12.49</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;t&#34;</span>: <span style="color:#ae81ff">9.28</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;a&#34;</span>: <span style="color:#ae81ff">8.04</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;o&#34;</span>: <span style="color:#ae81ff">7.64</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;i&#34;</span>: <span style="color:#ae81ff">7.57</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;n&#34;</span>: <span style="color:#ae81ff">7.23</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;s&#34;</span>: <span style="color:#ae81ff">6.51</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;r&#34;</span>: <span style="color:#ae81ff">6.28</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;h&#34;</span>: <span style="color:#ae81ff">5.05</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;l&#34;</span>: <span style="color:#ae81ff">4.07</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;d&#34;</span>: <span style="color:#ae81ff">3.82</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;c&#34;</span>: <span style="color:#ae81ff">3.34</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;u&#34;</span>: <span style="color:#ae81ff">2.73</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;m&#34;</span>: <span style="color:#ae81ff">2.51</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;f&#34;</span>: <span style="color:#ae81ff">2.40</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;p&#34;</span>: <span style="color:#ae81ff">2.14</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;g&#34;</span>: <span style="color:#ae81ff">1.87</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;w&#34;</span>: <span style="color:#ae81ff">1.68</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;y&#34;</span>: <span style="color:#ae81ff">1.66</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;b&#34;</span>: <span style="color:#ae81ff">1.48</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;v&#34;</span>: <span style="color:#ae81ff">1.05</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;k&#34;</span>: <span style="color:#ae81ff">0.54</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;x&#34;</span>: <span style="color:#ae81ff">0.23</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;j&#34;</span>: <span style="color:#ae81ff">0.16</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;q&#34;</span>: <span style="color:#ae81ff">0.12</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;z&#34;</span>: <span style="color:#ae81ff">0.09</span>,
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@staticmethod</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_frequency_distribution</span>(s: str):
+</span></span><span style="display:flex;"><span>        table_count: dict[str, int] <span style="color:#f92672">=</span> {c: <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">for</span> c <span style="color:#f92672">in</span> string<span style="color:#f92672">.</span>ascii_lowercase}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> char <span style="color:#f92672">in</span> s:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> char<span style="color:#f92672">.</span>isalpha():
+</span></span><span style="display:flex;"><span>                table_count[char<span style="color:#f92672">.</span>lower()] <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        total <span style="color:#f92672">=</span> sum(table_count<span style="color:#f92672">.</span>values())
+</span></span><span style="display:flex;"><span>        table_freq <span style="color:#f92672">=</span> {k: v <span style="color:#f92672">/</span> total <span style="color:#f92672">*</span> <span style="color:#ae81ff">100</span> <span style="color:#66d9ef">for</span> k, v <span style="color:#f92672">in</span> table_count<span style="color:#f92672">.</span>items()}
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> table_freq
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">decipher</span>(self, threshold: int):
+</span></span><span style="display:flex;"><span>        shifted_ciphers: list[str] <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># brute force through all shifts</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> shift <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">27</span>):
+</span></span><span style="display:flex;"><span>            shifted_ciphers<span style="color:#f92672">.</span>append(CaesarCipher(shift)<span style="color:#f92672">.</span>decrypt(self<span style="color:#f92672">.</span>ciphered_text))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># perform frequency analysis using chi square method</span>
+</span></span><span style="display:flex;"><span>        chi_table: dict[str, float] <span style="color:#f92672">=</span> {}
+</span></span><span style="display:flex;"><span>        expected_dist <span style="color:#f92672">=</span> list(self<span style="color:#f92672">.</span>freq_table<span style="color:#f92672">.</span>values())
+</span></span><span style="display:flex;"><span>        expected_sum <span style="color:#f92672">=</span> sum(expected_dist)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> sentence <span style="color:#f92672">in</span> shifted_ciphers:
+</span></span><span style="display:flex;"><span>            observed_dist <span style="color:#f92672">=</span> list(self<span style="color:#f92672">.</span>get_frequency_distribution(sentence)<span style="color:#f92672">.</span>values())
+</span></span><span style="display:flex;"><span>            observed_sum <span style="color:#f92672">=</span> sum(observed_dist)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># normalize observed distribution</span>
+</span></span><span style="display:flex;"><span>            observed_dist <span style="color:#f92672">=</span> [x <span style="color:#f92672">*</span> (expected_sum <span style="color:#f92672">/</span> observed_sum) <span style="color:#66d9ef">for</span> x <span style="color:#f92672">in</span> observed_dist]
+</span></span><span style="display:flex;"><span>            chi_square, p_value <span style="color:#f92672">=</span> scipy<span style="color:#f92672">.</span>stats<span style="color:#f92672">.</span>chisquare(
+</span></span><span style="display:flex;"><span>                f_obs<span style="color:#f92672">=</span>observed_dist, f_exp<span style="color:#f92672">=</span>expected_dist
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>            chi_table[sentence] <span style="color:#f92672">=</span> chi_square <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> p_value)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> [
+</span></span><span style="display:flex;"><span>            i[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> heapq<span style="color:#f92672">.</span>nsmallest(
+</span></span><span style="display:flex;"><span>                min(max(threshold, <span style="color:#ae81ff">1</span>), <span style="color:#ae81ff">26</span>), chi_table<span style="color:#f92672">.</span>items(), key<span style="color:#f92672">=</span><span style="color:#66d9ef">lambda</span> item: item[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    This bar chart shows the percentage appearance of each letter in English texts.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    When the caesar cipher is applied, this chart is also translated sideways by the amount of shift.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Thus, we need to find the shift in the chart (i.e., usage proportions), and by reversing the shift
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    we&#39;ll arrive at the original text.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span><span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>    ciphered <span style="color:#f92672">=</span> CaesarCipher(<span style="color:#ae81ff">13</span>)<span style="color:#f92672">.</span>encrypt(text)
+</span></span><span style="display:flex;"><span>    print(ciphered)
+</span></span><span style="display:flex;"><span>    threshold <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;Top </span><span style="color:#e6db74">{}</span><span style="color:#e6db74"> picks:&#34;</span><span style="color:#f92672">.</span>format(threshold))
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i, pick <span style="color:#f92672">in</span> enumerate(CaesarDecipher(ciphered)<span style="color:#f92672">.</span>decipher(threshold)):
+</span></span><span style="display:flex;"><span>        print(i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, pick)
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">--------</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</span></span></code></pre></div><div style="margin-top: 1rem;"></div>
+<p>Let&rsquo;s break it piece-by-piece.</p>
 
         </div>
 
