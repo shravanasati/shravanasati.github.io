@@ -12,7 +12,6 @@ author:
   image: /images/author/shravan.png
 math: true
 hero: hero.jpg
-draft: true
 ---
 
 The caesar cipher is one the oldest known ciphers known to mankind. As the story goes, the Roman emperor Julius Caesar used it extensively for military communications. It is a simple [substitution cipher](https://en.wikipedia.org/wiki/Substitution_cipher) and is not fit for any modern usage, since it is a trivial task to break it. However, it may be worthwhile to learn the roots of cryptography, as this cipher leads to more advanced ones like the Vigènere cipher and the unbreakable one-time pad cipher. We'll learn how to implement Caesar cipher in Python, and how to break it without knowing the shift involved, using frequency analysis and some statistics. That being said, I am neither a cryptanalyst nor a statistician, so pardon me for any mistakes.
@@ -277,3 +276,125 @@ if __name__ == "__main__":
 {{< vs 1 >}}
 
 Let's break it piece-by-piece.
+
+```python
+    def __init__(self, ciphered_text: str) -> None:
+        self.ciphered_text = ciphered_text
+        # taken from https://norvig.com/mayzner.html
+        self.freq_table = {
+            "e": 12.49,
+            "t": 9.28,
+            "a": 8.04,
+            "o": 7.64,
+            "i": 7.57,
+            "n": 7.23,
+            ...
+```
+
+This is the frequency table for the English language, which would be our expected distribution. These values add up to *almost* 100%.
+
+```python
+    @staticmethod
+    def get_frequency_distribution(s: str):
+        table_count: dict[str, int] = {c: 0 for c in string.ascii_lowercase}
+        for char in s:
+            if char.isalpha():
+                table_count[char.lower()] += 1
+
+        total = sum(table_count.values())
+        table_freq = {k: v / total * 100 for k, v in table_count.items()}
+        return table_freq
+```
+
+This is a helper function which generates a frequency distribtion table from the given text. We're just counting the number of each character, and then converting them into percentages. Note how we've converted each alphabetic character to lower case, to compare them against our expected frequency distribution.
+
+```python
+    def decipher(self, threshold: int):
+        shifted_ciphers: list[str] = []
+
+        # brute force through all shifts
+        for shift in range(1, 27):
+            shifted_ciphers.append(CaesarCipher(shift).decrypt(self.ciphered_text))
+
+        # perform frequency analysis using chi square method
+        chi_table: dict[str, float] = {}
+        expected_dist = list(self.freq_table.values())
+        expected_sum = sum(expected_dist)
+        ...
+```
+
+We're starting out with the same brute-force logic, but accumulating those transformed sentences instead of printing them. 
+
+Now, for frequency analysis, we would be comparing each shifted sentence's frequency distribution to the *expected* frequency distribution. To compare how close those distributions are, we would be employing the [chi-squared test](https://en.wikipedia.org/wiki/Chi-squared_test).
+
+Without going into much detail of what it is, it returns two numbers, the chi-squared statistic and the p-value. The lower the first number is, the better fit is the observed distribution with the expected distribution. The higher the second number is, the less indifference is between the two distributions. We will generate a combined score from both those numbers as such:
+
+$$
+ score  = \chi^2 * (1 - p)
+$$
+
+After we've calculated the score for all the transformations, we'll sort them according to their score, and return, for example, the 5 transformations with the smallest scores. That's what the rest of the code does.
+
+```python
+        ...
+        for sentence in shifted_ciphers:
+            observed_dist = list(self.get_frequency_distribution(sentence).values())
+            observed_sum = sum(observed_dist)
+            # normalize observed distribution
+            observed_dist = [x * (expected_sum / observed_sum) for x in observed_dist]
+            chi_square, p_value = scipy.stats.chisquare(
+                f_obs=observed_dist, f_exp=expected_dist
+            )
+            chi_table[sentence] = chi_square * (1 - p_value)
+
+        return [
+            i[0]
+            for i in heapq.nsmallest(
+                min(max(threshold, 1), 26), chi_table.items(), key=lambda item: item[1]
+            )
+        ]
+```
+
+The `decipher` method takes a `threshold` parameter, which indicates how many sentences we need to return. According to my tests, larger sentences, like in the example below are usually the first pick. Shorter sentences often fail because of the lack of enough characters. To combat that, increase the `threshold` parameter. 
+
+```python
+if __name__ == "__main__":
+    text = """
+    This bar chart shows the percentage appearance of each letter in English texts.
+    When the caesar cipher is applied, this chart is also translated sideways by the amount of shift.
+    Thus, we need to find the shift in the chart (i.e., usage proportions), and by reversing the shift
+    we'll arrive at the original text.
+    """.strip()
+    ciphered = CaesarCipher(13).encrypt(text)
+    print(ciphered, "\n")
+    threshold = 3
+    print("Top {} picks:".format(threshold))
+    for i, pick in enumerate(CaesarDecipher(ciphered).decipher(threshold)):
+        print(i + 1, pick)
+        print("\n--------\n")
+```
+
+Here's the output:
+
+```
+Guvf one puneg fubjf gur crepragntr nccrnenapr bs rnpu yrggre va Ratyvfu grkgf. Jura gur pnrfne pvcure vf nccyvrq, guvf puneg vf nyfb genafyngrq fvqrjnlf ol gur nzbhag bs fuvsg. Guhf, jr arrq gb svaq gur fuvsg va gur puneg (v.r., hfntr cebcbegvbaf), naq ol erirefvat gur fuvsg jr’yy neevir ng gur bevtvany grkg.
+
+Top 3 picks:
+1 This bar chart shows the percentage appearance of each letter in English texts. When the caesar cipher is applied, this chart is also translated sideways by the amount of shift. Thus, we need to find the shift in the chart (i.e., usage proportions), and by reversing the shift we’ll arrive at the original text.
+
+--------
+
+2 Uijt cbs dibsu tipxt uif qfsdfoubhf bqqfbsbodf pg fbdi mfuufs jo Fohmjti ufyut. Xifo uif dbftbs djqifs jt bqqmjfe, uijt dibsu jt bmtp usbotmbufe tjefxbzt cz uif bnpvou pg tijgu. Uivt, xf offe up gjoe uif tijgu jo uif dibsu (j.f., vtbhf qspqpsujpot), boe cz sfwfstjoh uif tijgu xf’mm bssjwf bu uif psjhjobm ufyu.
+
+--------
+
+3 Guvf one puneg fubjf gur crepragntr nccrnenapr bs rnpu yrggre va Ratyvfu grkgf. Jura gur pnrfne pvcure vf nccyvrq, guvf puneg vf nyfb genafyngrq fvqrjnlf ol gur nzbhag bs fuvsg. Guhf, jr arrq gb svaq gur fuvsg va gur puneg (v.r., hfntr cebcbegvbaf), naq ol erirefvat gur fuvsg jr’yy neevir ng gur bevtvany grkg.
+
+--------
+```
+
+{{< vs 2 >}}
+
+While I was working on this, I discovered a website called [boxentriq](https://www.boxentriq.com/code-breaking/caesar-cipher). It works even for small sentences. They've not shared their implementation, but their scores are much more better for actual sentences compared to incorrect ones. I assume some NLP is at play.
+
+Anyway, that's all for this blog. If you want to explore some more ciphers, take a look at the Vigenere cipher, one-time pad cipher & the enigma machine.
