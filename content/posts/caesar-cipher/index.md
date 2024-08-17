@@ -1,6 +1,6 @@
 ---
 title: "Understanding and breaking the Caesar cipher"
-date: 2024-08-16T18:00:02+05:30
+date: 2024-08-17T17:52:02+05:30
 description: Caesar cipher is classic substitution cipher. We will learn how to encrypt text using it, and how to break it without knowing the shift.
 menu:
   sidebar:
