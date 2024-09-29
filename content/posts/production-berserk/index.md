@@ -14,7 +14,7 @@ math: false
 hero: hero.jpg
 ---
 
-I often tend to take a look at the websites I've deployed - to check whether they are still online or not (I should use cutting edge tools like kubernetes). It also helps with the gloom that appears on my face when I view the website analytics.
+I often tend to take a look at the websites I've deployed - to check whether they are still online or not (I should use monitoring services). It also helps with the gloom that appears on my face when I view the website analytics.
 
 One such time was the fine summer morning of 13th June 2024. I woke up late and checked my mobile for notifications (there weren't any). I decided to perform the health check of my websites. All of them were working fine, except [animeviz](https://animeviz.ninja). When I opened it, it showed the default 502 Bad Gateway error page of nginx - which meant the python server was down. I was flabbergasted really - there weren't any recent code changes (last commit on the repository was almost 20 days ago). I kind of saw what was coming for me - a long debugging session. I slept back again and didn't start solving the problem until 11:30 AM.
 
