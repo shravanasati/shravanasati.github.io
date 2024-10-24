@@ -21,8 +21,8 @@
       <pubDate>Thu, 20 Jun 2024 18:00:02 +0530</pubDate>
       
       <guid>http://localhost:1313/posts/production-berserk/</guid>
-      <description>I often tend to take a look at the websites I&amp;rsquo;ve deployed - to check whether they are still online or not (I should use cutting edge tools like kubernetes). It also helps with the gloom that appears on my face when I view the website analytics.
-One such time was the fine summer morning of 13th June 2024. I woke up late and checked my mobile for notifications (there weren&amp;rsquo;t any).</description>
+      <description>I often tend to take a look at the websites I&amp;rsquo;ve deployed - to check whether they are still online or not (I should use monitoring services). It also helps with the gloom that appears on my face when I view the website analytics.
+One such time was the fine summer morning of 13th June 2024. I woke up late and checked my mobile for notifications (there weren&amp;rsquo;t any). I decided to perform the health check of my websites.</description>
     </item>
     
     <item>

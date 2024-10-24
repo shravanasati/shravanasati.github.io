@@ -41,9 +41,9 @@ socialLinks:
   icon: "fab fa-linkedin"
   url: "https://linkedin.com/in/shravan-asati"
 
-- name: Twitter
-  icon: "fab fa-twitter"
-  url: "https://x.com/@_softbubble"
+# - name: Twitter
+#   icon: "fab fa-twitter"
+#   url: "https://x.com/@_softbubble"
 
 # - name: Facebook
 #   icon: "fab fa-facebook"
