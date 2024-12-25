@@ -21,6 +21,14 @@ section:
 
 # your projects
 projects:
+- name: EveryNyan
+  # logo: /images/sections/projects/everynyan.png
+  role: Co-owner
+  timeline: "September 2024 - Present"
+  url: "https://everynyan.tech"
+  summary: "An anonymous social media website exclusive for Adani University students."
+  tags: ["nextjs", "react", "shadcn", "tailwind", "go"]
+
 - name: animeviz
   # logo: /images/sections/projects/kubernetes.png
   role: Owner
@@ -37,6 +45,12 @@ projects:
   summary: A context-aware AI SQL query builder and executor.
   tags: ["llm", "ai", "python", "flask", "tailwind", "mysql", "javascript", "ollama"]
 
+- name: stargazer
+  role: Co-Developer
+  timeline: "September 2024"
+  repo: https://github.com/shravanasati/stargazer
+  summary: A beauitful and feature-rich astronomy dashboard.
+  tags: ["3d", "ai", "python", "flask", "tailwind", "react", "javascript"]
 
 - name: titan-url
   # logo: /images/sections/projects/tensorflow.png
@@ -71,7 +85,7 @@ projects:
   summary: An emojipasta generator web interface, as well as a CLI. I also maintain the Go library which accomplishes emojipasta generation.
   tags: ["go", "library", "cli", "react", "typescript", "web", "docker", "tailwind"]
 
-- name: stellapy
+- name: stella
   # logo: /images/sections/projects/toha.png
   role: Developer
   timeline: "Jun 2021 - Present"
@@ -93,6 +107,13 @@ projects:
   repo: "https://github.com/shravanasati/crusade"
   summary: A friendly math interpreter.
   tags: ["c++", "data structures"]
+
+- name: wizard
+  role: Developer
+  timeline: October 2024
+  repo: "https://github.com/shravanasati/wizard"
+  summary: A matplotlib-based sorting algorithm visualizer.
+  tags: ["matplotlib", "algorithms", "python"]
 
 # - name: projectile motion simulator
 #   role: Developer

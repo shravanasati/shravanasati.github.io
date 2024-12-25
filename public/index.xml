@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shravan Asati</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on Shravan Asati</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 17 Aug 2024 17:52:02 +0530</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" /><item>
+      <title>Understanding and breaking the Caesar cipher</title>
+      <link>http://localhost:1313/posts/caesar-cipher/</link>
+      <pubDate>Sat, 17 Aug 2024 17:52:02 +0530</pubDate>
+      
+      <guid>http://localhost:1313/posts/caesar-cipher/</guid>
+      <description>&lt;p&gt;The caesar cipher is one the oldest known ciphers known to mankind. As the story goes, the Roman emperor Julius Caesar used it extensively for military communications. It is a simple &lt;a href=&#34;https://en.wikipedia.org/wiki/Substitution_cipher&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;substitution cipher&lt;/a&gt; and is not fit for any modern usage, since it is a trivial task to break it. However, it may be worthwhile to learn the roots of cryptography, as this cipher leads to more advanced ones like the Vigènere cipher and the unbreakable one-time pad cipher. We&amp;rsquo;ll learn how to implement Caesar cipher in Python, and how to break it without knowing the shift involved, using frequency analysis and some statistics. That being said, I am neither a cryptanalyst nor a statistician, so pardon me for any mistakes.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>How Everything Suddenly Goes Berserk in Production</title>
+      <link>http://localhost:1313/posts/production-berserk/</link>
+      <pubDate>Thu, 20 Jun 2024 18:00:02 +0530</pubDate>
+      
+      <guid>http://localhost:1313/posts/production-berserk/</guid>
+      <description>&lt;p&gt;I often tend to take a look at the websites I&amp;rsquo;ve deployed - to check whether they are still online or not (I should use monitoring services). It also helps with the gloom that appears on my face when I view the website analytics.&lt;/p&gt;
+&lt;p&gt;One such time was the fine summer morning of 13th June 2024. I woke up late and checked my mobile for notifications (there weren&amp;rsquo;t any). I decided to perform the health check of my websites. All of them were working fine, except &lt;a href=&#34;https://animeviz.ninja&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;animeviz&lt;/a&gt;. When I opened it, it showed the default 502 Bad Gateway error page of nginx - which meant the python server was down. I was flabbergasted really - there weren&amp;rsquo;t any recent code changes (last commit on the repository was almost 20 days ago). I kind of saw what was coming for me - a long debugging session. I slept back again and didn&amp;rsquo;t start solving the problem until 11:30 AM.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Achieving Infinite WPM in MonkeyType using Python</title>
+      <link>http://localhost:1313/posts/selenium/</link>
+      <pubDate>Thu, 16 May 2024 00:32:25 +0530</pubDate>
+      
+      <guid>http://localhost:1313/posts/selenium/</guid>
+      <description>&lt;p&gt;So I have this one friend who constantly boasts about his sub-200 WPM typing speed. I tried competing with him but couldn&amp;rsquo;t manage it above 100 WPM. I decided it was not worth the effort since I could beat him with the help of Python! :)&lt;/p&gt;
+&lt;p&gt;We&amp;rsquo;ll be using the awesome &lt;a href=&#34;https://www.selenium.dev/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;selenium&lt;/a&gt; library for this task.&lt;/p&gt;
+&lt;div style=&#34;margin-top: 3rem;&#34;&gt;&lt;/div&gt;
+&lt;h2 id=&#34;prerequisites&#34;&gt;Prerequisites&lt;/h2&gt;
+&lt;p&gt;Just intermediate-level knowledge of Python and HTML tags. That&amp;rsquo;s all. I&amp;rsquo;ll be explaining selenium along the way. This is essentially a selenium tutorial since I love project-based learning.&lt;/p&gt;</description>
+    </item>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </channel>
+</rss>

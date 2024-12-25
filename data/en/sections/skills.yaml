@@ -26,6 +26,16 @@ skills:
   summary: "Capable of writing concurrent, scalable, testable, and maintainable programs."
   url: "https://go.dev/"
 
+- name: NextJS
+  logo: /images/sections/skills/nextjs.png
+  summary: "Experienced with writing efficient full stack websites in Next.js."
+  url: "https://nextjs.org"
+
+- name: TypeScript
+  logo: /images/sections/skills/typescript.png
+  summary: "Capable of writing type-safe typescript code."
+  url: "https://typescriptlang.org"
+
 - name: JavaScript
   logo: /images/sections/skills/javascript.svg
   summary: "Capable of writing interactive frontend websites."
