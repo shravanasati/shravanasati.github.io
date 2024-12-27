@@ -6,7 +6,19 @@
     <description>Recent content on Shravan Asati</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 17 Aug 2024 17:52:02 +0530</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" /><item>
+    <lastBuildDate>Thu, 26 Dec 2024 18:00:02 +0530</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" /><item>
+      <title>How I built an anonymous and exclusive social media website</title>
+      <link>http://localhost:1313/posts/everynyan-architecture/</link>
+      <pubDate>Thu, 26 Dec 2024 18:00:02 +0530</pubDate>
+      
+      <guid>http://localhost:1313/posts/everynyan-architecture/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve been working on &lt;a href=&#34;https://everynyan.tech&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;EveryNyan&lt;/a&gt;, an anonymous social media website exclusive to Adani University students for the past couple of months. This blog outlines some of the implementation details, architecture decisions behind it and the challenges we faced while working on this huge project.&lt;/p&gt;
+&lt;p&gt;The code which is being discussed in this blog can be found &lt;a href=&#34;https://github.com/shravanasati/everynyan&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;the-idea&#34;&gt;The Idea&lt;/h3&gt;
+&lt;p&gt;Inspired by the movie Social Network, me and my friend &lt;a href=&#34;https://ni3rav.me&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Nirav&lt;/a&gt; thought of working on a social media website exclusive for our institute&amp;rsquo;s students - with a twist - everything would be &lt;strong&gt;anonymous&lt;/strong&gt;. The core feature of the website would be to create posts on certain boards (eg. confessions, gyan, random&amp;hellip;), where other users could vote them (up or down) and write comments on the post. If it sounds a lot like 4chan and reddit, your observations are astute.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
       <title>Understanding and breaking the Caesar cipher</title>
       <link>http://localhost:1313/posts/caesar-cipher/</link>
       <pubDate>Sat, 17 Aug 2024 17:52:02 +0530</pubDate>
