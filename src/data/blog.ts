@@ -6,6 +6,8 @@ import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import { unified } from "unified";
 
 type Metadata = {
@@ -22,8 +24,12 @@ function getMDXFiles(dir: string) {
 export async function markdownToHTML(markdown: string) {
   const p = await unified()
     .use(remarkParse)
+    // parse math blocks and inline math
+    .use(remarkMath)
     .use(remarkGfm)
     .use(remarkRehype)
+    // render math to HTML using KaTeX
+    .use(rehypeKatex)
     .use(rehypePrettyCode, {
       // https://rehype-pretty.pages.dev/#usage
       theme: {
