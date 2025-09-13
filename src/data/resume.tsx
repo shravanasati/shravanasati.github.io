@@ -8,9 +8,9 @@ export const DATA = {
   location: "Ahmedabad, India",
   locationLink: "https://www.google.com/maps/place/ahmedabad",
   description:
-    " I am a passionate software developer who's currently studying CSE at Adani University. I love building web servers and CLI tools with Python and Go.",
+    "I am a passionate software developer who's currently studying CSE at Adani University. I love building web servers and CLI tools with Python and Go.",
   summary:
-    "",
+    "I am enthusiastic about building reliable, fault-tolerant systems that scale. I have built and deployed several web apps as personal projects and hackathon products. In addition to full-stack web development, I enjoy creating command-line tools that do cool things and automating boring tasks. Distributed systems and cloud computing fascinate me, and I am always curious about how things work under the hood. In my free time, I enjoy reading tech blogs and fantasy literature, as well as watching Formula 1 and anime.",
   avatarUrl: "/me.png",
   skills: [
     "Python",
