@@ -24,7 +24,7 @@ export default function NotFound() {
 
           <BlurFade delay={BLUR_FADE_DELAY * 3}>
             <p className="text-muted-foreground text-lg max-w-md mx-auto">
-              Looks like you've ventured into uncharted territory. The page you're looking for doesn't exist.
+              Looks like you&apos;ve ventured into uncharted territory. The page you&apos;re looking for doesn&apos;t exist.
             </p>
           </BlurFade>
         </div>

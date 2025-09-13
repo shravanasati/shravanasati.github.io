@@ -295,6 +295,7 @@ export const DATA = {
           href: "https://roadsafe.vercel.app",
         },
       ],
+      image: "",
     },
     {
       title: "Ingenious 6.0 2025",
@@ -313,6 +314,7 @@ export const DATA = {
           href: "https://drive.google.com/file/d/1AkwbuCIhst8KurZCaxvZRYivRC6pbbYo/view?usp=drivesdk",
         },
       ],
+      image: "",
     },
   ],
 } as const;
