@@ -91,7 +91,7 @@ export const DATA = {
       school: "Adani University",
       href: "https://adaniuni.ac.in",
       degree: "B.Tech. in Computer Science & Engineering",
-      logoUrl: "/adaniuni.png", 
+      logoUrl: "/adaniuni.png",
       start: "2023",
       end: "2027",
       grade: {
@@ -109,7 +109,7 @@ export const DATA = {
         ],
       },
       extracurriculars: [
-        "Conducted a session on \"Browser Automation with Selenium\" with an audience of 60+ people on behalf of the coding club.",
+        'Conducted a session on "Browser Automation with Selenium" with an audience of 60+ people on behalf of the coding club.',
         "Won a Gold medal in Carrom during the cultural fest.",
       ],
     },
@@ -128,151 +128,356 @@ export const DATA = {
     // },
   ],
   projects: [
-    // Converted from projects YAML
     {
-      title: "EveryNyan",
+      title: "reverie",
+      dates: "June 2024 - Present",
+      href: "https://reverieai.vercel.app",
+      description:
+        "An AI-powered journaling website that provides actionable insights and tracks mental well-being.",
+      technologies: [
+        "nextjs",
+        "spring",
+        "python",
+        "nlp",
+        "genai",
+        "postgres",
+        "rag",
+      ],
+      links: [
+        {
+          type: "Website",
+          href: "https://reverieai.vercel.app",
+          icon: <Icons.globe className="size-3" />,
+        },
+      ],
+      image: "/projects/reverie.png",
+    },
+    {
+      title: "everynyan",
       dates: "September 2024 - Present",
-      active: true,
       href: "https://everynyan.vercel.app",
-      description: "An anonymous social media website exclusive for Adani University students.",
+      description:
+        "An anonymous social media website exclusive for Adani University students.",
       technologies: ["nextjs", "react", "shadcn", "tailwind", "go", "firebase"],
       links: [
-        { type: "Website", href: "https://everynyan.tech", icon: <Icons.globe className="size-3" /> },
-        { type: "YouTube", href: "https://youtu.be/KvFH54cE7OQ", icon: <Icons.youtube className="size-3" /> },
+        {
+          type: "Website",
+          href: "https://everynyan.tech",
+          icon: <Icons.globe className="size-3" />,
+        },
+        {
+          type: "YouTube",
+          href: "https://youtu.be/KvFH54cE7OQ",
+          icon: <Icons.youtube className="size-3" />,
+        },
       ],
-      image: "/everynyan.png",
+      image: "/projects/everynyan.png",
+    },
+    {
+      title: "shadowfax",
+      dates: "September 2025 - Present",
+      href: "",
+      description:
+        "A minimal HTTP/1.1 server from scratch in Go over raw TCP — implemented request parsing, routing, chunked encoding, and concurrent connection handling.",
+      technologies: ["go", "http", "server"],
+      links: [
+        {
+          type: "Github",
+          href: "https://github.com/shravanasati/shadowfax",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "yapper",
+      dates: "June 2025 - July 2025",
+      href: "",
+      description:
+        "Fully automated 'brainrot' pipeline that generates multiple viral-ready shorts from long-form Youtube content with gameplay for dopamine-maxxing.",
+      technologies: ["python", "ffmpeg", "genai"],
+      links: [
+        {
+          type: "Github",
+          href: "https://github.com/shravanasati/yapper",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
     },
     {
       title: "animeviz",
       dates: "February 2024 - Present",
-      active: true,
       href: "https://animeviz.ninja",
-      description: "A simple website to draw visualizations over your animelists.",
-      technologies: ["pandas", "matplotlib", "python", "flask", "picocss", "mysql", "javascript", "api"],
-      links: [
-        { type: "Website", href: "https://animeviz.ninja", icon: <Icons.globe className="size-3" /> },
-        { type: "YouTube", href: "https://youtu.be/JU7f4IIr4nw", icon: <Icons.youtube className="size-3" /> },
+      description:
+        "A simple website to draw visualizations over your animelists.",
+      technologies: [
+        "pandas",
+        "matplotlib",
+        "python",
+        "flask",
+        "picocss",
+        "mysql",
+        "javascript",
+        "api",
       ],
-      image: "",
+      links: [
+        {
+          type: "Website",
+          href: "https://animeviz.ninja",
+          icon: <Icons.globe className="size-3" />,
+        },
+        {
+          type: "YouTube",
+          href: "https://youtu.be/JU7f4IIr4nw",
+          icon: <Icons.youtube className="size-3" />,
+        },
+      ],
+      image: "/projects/animeviz.png",
     },
     {
       title: "squirrel",
       dates: "April 2024",
-      active: false,
       href: "https://github.com/shravanasati/squirrel",
       description: "A context-aware AI SQL query builder and executor.",
-      technologies: ["llm", "ai", "python", "flask", "tailwind", "mysql", "javascript", "ollama"],
-      links: [
-        { type: "Source", href: "https://github.com/shravanasati/squirrel", icon: <Icons.github className="size-3" /> },
-        { type: "YouTube", href: "https://youtu.be/ikKFUZu641k", icon: <Icons.youtube className="size-3" /> },
+      technologies: [
+        "llm",
+        "ai",
+        "python",
+        "flask",
+        "tailwind",
+        "mysql",
+        "javascript",
+        "ollama",
       ],
-      image: "",
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/squirrel",
+          icon: <Icons.github className="size-3" />,
+        },
+        {
+          type: "YouTube",
+          href: "https://youtu.be/ikKFUZu641k",
+          icon: <Icons.youtube className="size-3" />,
+        },
+      ],
+      image: "/projects/squirrel.png",
     },
     {
-      title: "stargazer",
-      dates: "September 2024",
-      active: false,
-      href: "https://github.com/shravanasati/stargazer",
-      description: "A beauitful and feature-rich astronomy dashboard.",
-      technologies: ["3d", "ai", "python", "flask", "tailwind", "react", "javascript"],
+      title: "elara",
+      dates: "April 2025 - May 2025",
+      href: "",
+      description:
+        "A CLI tool to convert Jupyter notebooks into pretty HTML documents. Also features a VSCode extension.",
+      technologies: ["python", "jupyter", "jinja"],
       links: [
-        { type: "Source", href: "https://github.com/shravanasati/stargazer", icon: <Icons.github className="size-3" /> },
-      ],
-      image: "",
-    },
-    {
-      title: "titan-url",
-      dates: "May 2021 - Present",
-      active: true,
-      href: "https://titanurl.vercel.app",
-      description: "A no-fuss URL shortener, with a public API. It has a terminal client too.",
-      technologies: ["python", "flask", "postgres", "vercel", "nodejs", "tailwindcss", "javascript"],
-      links: [
-        { type: "Website", href: "https://titanurl.vercel.app", icon: <Icons.globe className="size-3" /> },
-      ],
-      image: "",
-    },
-    {
-      title: "iris",
-      dates: "July 2021 - Present",
-      active: true,
-      href: "https://github.com/shravanasati/iris",
-      description: "An easy-to-use, cross-platform, feature-rich and extremely customizable wallpaper manager.",
-      technologies: ["go", "cli", "wallpaper manager"],
-      links: [
-        { type: "Source", href: "https://github.com/shravanasati/iris", icon: <Icons.github className="size-3" /> },
-      ],
-      image: "",
-    },
-    {
-      title: "atomic",
-      dates: "Jan 2024 - Present",
-      active: true,
-      href: "https://github.com/shravanasati/atomic",
-      description: "Feature-rich command-line benchmarking tool, written in Go.",
-      technologies: ["go", "cli"],
-      links: [
-        { type: "Source", href: "https://github.com/shravanasati/atomic", icon: <Icons.github className="size-3" /> },
-      ],
-      image: "",
-    },
-    {
-      title: "emozi",
-      dates: "June 2023 - June 2024",
-      active: false,
-      href: "https://coral-app-b9pj6.ondigitalocean.app/",
-      description: "An emojipasta generator web interface, as well as a CLI. I also maintain the Go library which accomplishes emojipasta generation.",
-      technologies: ["go", "library", "cli", "react", "typescript", "web", "docker", "tailwind"],
-      links: [
-        { type: "Website", href: "https://coral-app-b9pj6.ondigitalocean.app/", icon: <Icons.globe className="size-3" /> },
+        {
+          type: "Github",
+          href: "https://github.com/shravanasati/elara",
+          icon: <Icons.github className="size-3" />,
+        },
       ],
       image: "",
     },
     {
       title: "stella",
       dates: "Jun 2021 - Present",
-      active: true,
       href: "https://github.com/shravanasati/stellapy",
-      description: "CLI utility to streamline your web development experience - live reload for the terminal as well as browser.",
+      description:
+        "CLI utility to streamline your web development experience - live reload for the terminal as well as browser.",
       technologies: ["python", "cli"],
       links: [
-        { type: "Source", href: "https://github.com/shravanasati/stellapy", icon: <Icons.github className="size-3" /> },
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/stellapy",
+          icon: <Icons.github className="size-3" />,
+        },
       ],
       image: "",
     },
     {
+      title: "stargazer",
+      dates: "September 2024",
+      href: "https://github.com/shravanasati/stargazer",
+      description: "A beauitful and feature-rich astronomy dashboard.",
+      technologies: [
+        "3d",
+        "ai",
+        "python",
+        "flask",
+        "tailwind",
+        "react",
+        "javascript",
+      ],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/stargazer",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "/projects/stargazer.png",
+    },
+    {
+      title: "react-playground",
+      dates: "Feb 2025",
+      href: "",
+      description: "Live preview enabled react playground, with npm packages.",
+      technologies: ["react", "npm", "esbuild"],
+      links: [
+        {
+          type: "Github",
+          href: "https://github.com/shravanasati/react-playground",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "/projects/react-playground.jpeg",
+    },
+    {
+      title: "iris",
+      dates: "July 2021 - Present",
+      href: "https://github.com/shravanasati/iris",
+      description:
+        "An easy-to-use, cross-platform, feature-rich and extremely customizable wallpaper manager.",
+      technologies: ["go", "cli", "wallpaper manager"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/iris",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "atomic",
+      dates: "Jan 2024 - Present",
+      href: "https://github.com/shravanasati/atomic",
+      description:
+        "Feature-rich command-line benchmarking tool, written in Go.",
+      technologies: ["go", "cli"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/atomic",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "titan-url",
+      dates: "May 2021 - Present",
+      href: "https://titanurl.vercel.app",
+      description:
+        "A no-fuss URL shortener, with a public API. It has a terminal client too.",
+      technologies: [
+        "python",
+        "flask",
+        "postgres",
+        "vercel",
+        "nodejs",
+        "tailwindcss",
+        "javascript",
+      ],
+      links: [
+        {
+          type: "Website",
+          href: "https://titanurl.vercel.app",
+          icon: <Icons.globe className="size-3" />,
+        },
+      ],
+      image: "/projects/titan-url.png",
+    },
+    {
+      title: "emozi",
+      dates: "June 2023 - June 2024",
+      href: "https://coral-app-b9pj6.ondigitalocean.app/",
+      description:
+        "An emojipasta generator web interface, as well as a CLI. I also maintain the Go library which accomplishes emojipasta generation.",
+      technologies: [
+        "go",
+        "library",
+        "cli",
+        "react",
+        "typescript",
+        "web",
+        "docker",
+        "tailwind",
+      ],
+      links: [
+        {
+          type: "Website",
+          href: "https://coral-app-b9pj6.ondigitalocean.app/",
+          icon: <Icons.globe className="size-3" />,
+        },
+      ],
+      image: "/projects/emozi.png",
+    },
+    {
       title: "pyscreenrec",
       dates: "Feb 2021 - May 2021",
-      active: false,
       href: "https://pypi.org/project/pyscreenrec",
-      description: "A lightweight and cross-platform python library to record screen.",
+      description:
+        "A lightweight and cross-platform python library to record screen.",
       technologies: ["python", "library", "opencv"],
       links: [
-        { type: "Website", href: "https://pypi.org/project/pyscreenrec", icon: <Icons.globe className="size-3" /> },
+        {
+          type: "Website",
+          href: "https://pypi.org/project/pyscreenrec",
+          icon: <Icons.globe className="size-3" />,
+        },
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/pyscreenrec",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "ananke",
+      dates: "Jan 2025",
+      href: "",
+      description: "A HTML to markdown converter.",
+      technologies: ["go", "html", "md"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/ananke",
+          icon: <Icons.globe className="size-3" />,
+        },
       ],
       image: "",
     },
     {
       title: "crusade",
-      dates: "Feb 2024 - Present",
-      active: true,
+      dates: "Feb 2024",
       href: "https://github.com/shravanasati/crusade",
       description: "A friendly math interpreter.",
       technologies: ["c++", "data structures"],
       links: [
-        { type: "Source", href: "https://github.com/shravanasati/crusade", icon: <Icons.github className="size-3" /> },
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/crusade",
+          icon: <Icons.github className="size-3" />,
+        },
       ],
       image: "",
     },
     {
       title: "wizard",
       dates: "October 2024",
-      active: false,
-      href: "https://github.com/shravanasati/wizard",
+      href: "",
       description: "A matplotlib-based sorting algorithm visualizer.",
       technologies: ["matplotlib", "algorithms", "python"],
       links: [
-        { type: "Source", href: "https://github.com/shravanasati/wizard", icon: <Icons.github className="size-3" /> },
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/wizard",
+          icon: <Icons.github className="size-3" />,
+        },
       ],
       image: "",
     },
@@ -285,7 +490,7 @@ export const DATA = {
       description:
         "Awarded first place for building a website focused on road safety and accident prevention, incorporating weather-based insights and community- driven incidents.",
       // image:
-        // "https://pub-83c5db439b40468498f97946200806f7.r2.dev/hackline/hack-davis.png",
+      // "https://pub-83c5db439b40468498f97946200806f7.r2.dev/hackline/hack-davis.png",
       // win: "Best Data Hack",
       // mlh: "https://s3.amazonaws.com/logged-assets/trust-badge/2018/white.svg",
       links: [
