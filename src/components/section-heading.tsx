@@ -12,7 +12,7 @@ export function SectionHeading({
 }) {
   return (
     <h2 id={id} className={cn("text-xl font-bold group", className)}>
-      <a href={`#${id}`} className="flex items-center gap-2">
+      <a href={`#${id}`} className="flex items-center justify-center gap-2">
         {children}
         <LinkIcon className="size-4 text-muted-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </a>

@@ -154,7 +154,7 @@ export const DATA = {
     },
     {
       title: "everynyan",
-      dates: "September 2024 - Present",
+      dates: "September 2024 - December 2024",
       href: "https://everynyan.vercel.app",
       description:
         "An anonymous social media website exclusive for Adani University students.",
@@ -175,7 +175,7 @@ export const DATA = {
     },
     {
       title: "shadowfax",
-      dates: "September 2025 - Present",
+      dates: "September 2025",
       href: "",
       description:
         "A minimal HTTP/1.1 server from scratch in Go over raw TCP — implemented request parsing, routing, chunked encoding, and concurrent connection handling.",
@@ -207,7 +207,7 @@ export const DATA = {
     },
     {
       title: "animeviz",
-      dates: "February 2024 - Present",
+      dates: "February 2024 - May 2024",
       href: "https://animeviz.ninja",
       description:
         "A simple website to draw visualizations over your animelists.",
@@ -265,16 +265,21 @@ export const DATA = {
       image: "/projects/squirrel.png",
     },
     {
-      title: "elara",
-      dates: "April 2025 - May 2025",
-      href: "",
+      title: "pyscreenrec",
+      dates: "Feb 2021 - May 2021",
+      href: "https://pypi.org/project/pyscreenrec",
       description:
-        "A CLI tool to convert Jupyter notebooks into pretty HTML documents. Also features a VSCode extension.",
-      technologies: ["python", "jupyter", "jinja"],
+        "A lightweight and cross-platform python library to record screen. Over 100k downloads on PyPI.",
+      technologies: ["python", "library", "opencv"],
       links: [
         {
-          type: "Github",
-          href: "https://github.com/shravanasati/elara",
+          type: "Website",
+          href: "https://pypi.org/project/pyscreenrec",
+          icon: <Icons.globe className="size-3" />,
+        },
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/pyscreenrec",
           icon: <Icons.github className="size-3" />,
         },
       ],
@@ -282,7 +287,7 @@ export const DATA = {
     },
     {
       title: "stella",
-      dates: "Jun 2021 - Present",
+      dates: "Jun 2021 - July 2024",
       href: "https://github.com/shravanasati/stellapy",
       description:
         "CLI utility to streamline your web development experience - live reload for the terminal as well as browser.",
@@ -336,7 +341,7 @@ export const DATA = {
     },
     {
       title: "iris",
-      dates: "July 2021 - Present",
+      dates: "July 2021 - Aug 2024",
       href: "https://github.com/shravanasati/iris",
       description:
         "An easy-to-use, cross-platform, feature-rich and extremely customizable wallpaper manager.",
@@ -352,7 +357,7 @@ export const DATA = {
     },
     {
       title: "atomic",
-      dates: "Jan 2024 - Present",
+      dates: "Jan 2024",
       href: "https://github.com/shravanasati/atomic",
       description:
         "Feature-rich command-line benchmarking tool, written in Go.",
@@ -368,7 +373,7 @@ export const DATA = {
     },
     {
       title: "titan-url",
-      dates: "May 2021 - Present",
+      dates: "May 2021",
       href: "https://titanurl.vercel.app",
       description:
         "A no-fuss URL shortener, with a public API. It has a terminal client too.",
@@ -416,21 +421,16 @@ export const DATA = {
       image: "/projects/emozi.png",
     },
     {
-      title: "pyscreenrec",
-      dates: "Feb 2021 - May 2021",
-      href: "https://pypi.org/project/pyscreenrec",
+      title: "elara",
+      dates: "April 2025 - May 2025",
+      href: "",
       description:
-        "A lightweight and cross-platform python library to record screen.",
-      technologies: ["python", "library", "opencv"],
+        "A CLI tool to convert Jupyter notebooks into pretty HTML documents. Also features a VSCode extension.",
+      technologies: ["python", "jupyter", "jinja"],
       links: [
         {
-          type: "Website",
-          href: "https://pypi.org/project/pyscreenrec",
-          icon: <Icons.globe className="size-3" />,
-        },
-        {
-          type: "GitHub",
-          href: "https://github.com/shravanasati/pyscreenrec",
+          type: "Github",
+          href: "https://github.com/shravanasati/elara",
           icon: <Icons.github className="size-3" />,
         },
       ],
