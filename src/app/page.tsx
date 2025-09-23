@@ -42,7 +42,9 @@ export default function Page() {
       </section>
       <section id="about">
         <BlurFade delay={BLUR_FADE_DELAY * 3}>
-          <SectionHeading id="about">About</SectionHeading>
+          <SectionHeading id="about" center={false}>
+            About
+          </SectionHeading>
         </BlurFade>
         <BlurFade delay={BLUR_FADE_DELAY * 4}>
           <Markdown className="prose max-w-full text-pretty font-sans text-sm text-muted-foreground dark:prose-invert">
@@ -53,7 +55,9 @@ export default function Page() {
       <section id="work">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 5}>
-            <SectionHeading id="work">Work Experience</SectionHeading>
+            <SectionHeading id="work" center={false}>
+              Work Experience
+            </SectionHeading>
           </BlurFade>
           {DATA.work.map((work, id) => (
             <BlurFade
@@ -78,7 +82,9 @@ export default function Page() {
       <section id="education">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 7}>
-            <SectionHeading id="education">Education</SectionHeading>
+            <SectionHeading id="education" center={false}>
+              Education
+            </SectionHeading>
           </BlurFade>
           {DATA.education.map((education, id) => (
             <BlurFade
@@ -101,7 +107,9 @@ export default function Page() {
       <section id="skills">
         <div className="flex min-h-0 flex-col gap-y-3">
           <BlurFade delay={BLUR_FADE_DELAY * 9}>
-            <SectionHeading id="skills">Skills</SectionHeading>
+            <SectionHeading id="skills" center={false}>
+              Skills
+            </SectionHeading>
           </BlurFade>
           <div className="flex flex-wrap gap-1">
             {DATA.skills.map((skill, id) => (
@@ -127,8 +135,8 @@ export default function Page() {
                   Check out my latest work
                 </SectionHeading>
                 <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  I&apos;ve worked on a variety of projects, from simple
-                  CLI tools to complex web applications. Here are a few of my
+                  I&apos;ve worked on a variety of projects, from simple CLI
+                  tools to complex web applications. Here are a few of my
                   favorites. I love building.
                 </p>
               </div>
