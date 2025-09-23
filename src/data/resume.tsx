@@ -178,7 +178,7 @@ export const DATA = {
       dates: "September 2025",
       href: "",
       description:
-        "A minimal HTTP/1.1 server from scratch in Go over raw TCP — implemented request parsing, routing, chunked encoding, and concurrent connection handling.",
+        "A minimal HTTP/1.1 server from scratch in Go over raw TCP — implemented request parsing, routing, chunked encoding, persistent connections and concurrent connection handling.",
       technologies: ["go", "http", "server"],
       links: [
         {
