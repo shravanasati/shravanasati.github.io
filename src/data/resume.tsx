@@ -467,6 +467,22 @@ export const DATA = {
       image: "",
     },
     {
+      title: "pensieve",
+      dates: "April 2025",
+      href: "https://github.com/shravanasati/pensieve",
+      description:
+        "Magically convert your logical expressions into truth tables.",
+      technologies: ["c++", "discrete math", "data structures"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/pensieve",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
       title: "wizard",
       dates: "October 2024",
       href: "",
@@ -476,6 +492,21 @@ export const DATA = {
         {
           type: "GitHub",
           href: "https://github.com/shravanasati/wizard",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "gap",
+      dates: "June 2024",
+      href: "",
+      description: "Yet another grep tool.",
+      technologies: ["go", "cli"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/gap",
           icon: <Icons.github className="size-3" />,
         },
       ],
