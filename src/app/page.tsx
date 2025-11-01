@@ -6,9 +6,11 @@ import { ProjectCard } from "@/components/project-card";
 import { ResumeCard } from "@/components/resume-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { DATA } from "@/data/resume";
 import Link from "next/link";
 import Markdown from "react-markdown";
+import { Download, ArrowRight } from "lucide-react";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -30,6 +32,26 @@ export default function Page() {
                 delay={BLUR_FADE_DELAY}
                 text={DATA.description}
               />
+              <BlurFade delay={BLUR_FADE_DELAY * 2}>
+                <div className="flex gap-3 pt-4">
+                  <Link href="/resume.pdf" target="_blank">
+                    <Button
+                      size="lg"
+                      className="rounded-full border-zinc-300"
+                      variant="outline"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Resume
+                    </Button>
+                  </Link>
+                  <Link href="/blog">
+                    <Button size="lg" className="rounded-full">
+                      Blogs
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </BlurFade>
             </div>
             <BlurFade delay={BLUR_FADE_DELAY}>
               <Avatar className="size-28 border">
