@@ -149,6 +149,11 @@ export const DATA = {
           href: "https://reverieai.vercel.app",
           icon: <Icons.globe className="size-3" />,
         },
+        {
+          type: "YouTube",
+          href: "https://youtu.be/YROT1HN-I18",
+          icon: <Icons.youtube className="size-3" />,
+        },
       ],
       image: "/projects/reverie.png",
     },
