@@ -63,7 +63,7 @@ export const DATA = {
       // },
       email: {
         name: "Send Email",
-        url: "#",
+        url: "mailto:dev.shravan@proton.me",
         icon: Icons.email,
 
         navbar: false,
