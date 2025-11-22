@@ -10,7 +10,8 @@ export const metadata = {
 const BLUR_FADE_DELAY = 0.04;
 
 export default async function BlogPage() {
-  const posts = await getBlogPosts();
+  let posts = await getBlogPosts();
+  posts = posts.filter(post => !post.metadata.draft)
 
   return (
     <section>
