@@ -195,6 +195,22 @@ export const DATA = {
       image: "",
     },
     {
+      title: "palantir",
+      dates: "Oct 2025 - Nov 2025",
+      href: "",
+      description:
+        " Hybrid movie search engine with semantic search, BM25, AI-powered query enhancement and rerankers.",
+      technologies: ["python", "bm25", "retrieval"],
+      links: [
+        {
+          type: "Github",
+          href: "https://github.com/shravanasati/palantir",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
       title: "yapper",
       dates: "June 2025 - July 2025",
       href: "",
@@ -205,6 +221,27 @@ export const DATA = {
         {
           type: "Github",
           href: "https://github.com/shravanasati/yapper",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "pyscreenrec",
+      dates: "Feb 2021 - May 2021",
+      href: "https://pypi.org/project/pyscreenrec",
+      description:
+        "A lightweight and cross-platform python library to record screen. Downloaded over 100k times on PyPI.",
+      technologies: ["python", "library", "opencv"],
+      links: [
+        {
+          type: "Website",
+          href: "https://pypi.org/project/pyscreenrec",
+          icon: <Icons.globe className="size-3" />,
+        },
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/pyscreenrec",
           icon: <Icons.github className="size-3" />,
         },
       ],
@@ -270,27 +307,6 @@ export const DATA = {
       image: "/projects/squirrel.png",
     },
     {
-      title: "pyscreenrec",
-      dates: "Feb 2021 - May 2021",
-      href: "https://pypi.org/project/pyscreenrec",
-      description:
-        "A lightweight and cross-platform python library to record screen. Over 100k downloads on PyPI.",
-      technologies: ["python", "library", "opencv"],
-      links: [
-        {
-          type: "Website",
-          href: "https://pypi.org/project/pyscreenrec",
-          icon: <Icons.globe className="size-3" />,
-        },
-        {
-          type: "GitHub",
-          href: "https://github.com/shravanasati/pyscreenrec",
-          icon: <Icons.github className="size-3" />,
-        },
-      ],
-      image: "",
-    },
-    {
       title: "stella",
       dates: "Jun 2021 - July 2024",
       href: "https://github.com/shravanasati/stellapy",
@@ -301,6 +317,21 @@ export const DATA = {
         {
           type: "GitHub",
           href: "https://github.com/shravanasati/stellapy",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "kneedle4j",
+      dates: "Aug 2025 - Aug 2025",
+      href: "https://github.com/shravanasati/kneedle4j",
+      description: " Java implementation of the kneedle algorithm. ",
+      technologies: ["java", "kneedle", "library"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/kneedle4j",
           icon: <Icons.github className="size-3" />,
         },
       ],
