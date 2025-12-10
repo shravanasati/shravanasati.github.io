@@ -534,6 +534,22 @@ export const DATA = {
       image: "",
     },
     {
+      title: "sasha",
+      dates: "Nov 2025",
+      href: "",
+      description:
+        "Lightweight and interactive shell in Go. Supports builtins, pipelines, redirection, background jobs, history, aliases, configuration file and more.",
+      technologies: ["go", "cli"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/sasha",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
       title: "gap",
       dates: "June 2024",
       href: "",
@@ -543,6 +559,21 @@ export const DATA = {
         {
           type: "GitHub",
           href: "https://github.com/shravanasati/gap",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "rotom",
+      dates: "Nov 2025",
+      href: "",
+      description: "A CLI tool to display Pokémon sprites in your terminal.",
+      technologies: ["go", "cli"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/rotom",
           icon: <Icons.github className="size-3" />,
         },
       ],
