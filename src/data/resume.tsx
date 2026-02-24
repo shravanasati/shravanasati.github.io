@@ -130,7 +130,7 @@ export const DATA = {
   projects: [
     {
       title: "reverie",
-      dates: "June 2024 - Present",
+      dates: "June 2025 - August 2025",
       href: "https://reverieai.vercel.app",
       description:
         "An AI-powered journaling website that provides actionable insights and tracks mental well-being.",
@@ -616,6 +616,25 @@ export const DATA = {
           icon: <Icons.globe className="h-4 w-4" />,
           href: "https://drive.google.com/file/d/1AkwbuCIhst8KurZCaxvZRYivRC6pbbYo/view?usp=drivesdk",
         },
+      ],
+      image: "",
+    },
+    {
+      title: "Odoo Hackathon",
+      dates: "Jan 23th - 24th, 2026",
+      location: "Adani University, Ahmedabad",
+      description:
+        "Secured second runner up place for building a restaurant POS system, streamlining retail transaction workflows.",
+      // image:
+      // "https://pub-83c5db439b40468498f97946200806f7.r2.dev/hackline/hack-davis.png",
+      // win: "Best Data Hack",
+      // mlh: "https://s3.amazonaws.com/logged-assets/trust-badge/2018/white.svg",
+      links: [
+        // {
+        //   title: "YouTube",
+        //   icon: <Icons.globe className="h-4 w-4" />,
+        //   href: "https://drive.google.com/file/d/1AkwbuCIhst8KurZCaxvZRYivRC6pbbYo/view?usp=drivesdk",
+        // },
       ],
       image: "",
     },
