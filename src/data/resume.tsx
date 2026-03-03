@@ -73,6 +73,20 @@ export const DATA = {
 
   work: [
     {
+      company: "Polarcut",
+      href: "https://polarcut.io",
+      badges: [],
+      location: "Remote",
+      title: "Software Developer Intern",
+      logoUrl: "/polarcut.jpg",
+      start: "Feb 2026",
+      end: "March 2026",
+      description: [
+        "Engineered a Remotion-based caption system with frame-accurate timing, word-level motion effects, and LLM-driven semantic emphasis across 4 stylized templates, reducing subtitle production time by 70% per video.",
+        "Implemented an internal AI prompt-to-motion-graphics pipeline for text and vector animations powering Shorts B-roll, replacing a third-party API and reducing estimated per-asset inference cost from ₹60 to ₹12 (80% lower cost).",
+      ],
+    },
+    {
       company: "Toucan Labs",
       href: "https://communitea.toucanlabs.ai",
       badges: [],
@@ -81,8 +95,11 @@ export const DATA = {
       logoUrl: "/toucanlabs.jpeg",
       start: "June 2025",
       end: "Aug 2025",
-      description:
-        "Built and deployed a full-stack observability platform with Grafana Cloud (Loki, Prometheus/Mimir, Tempo) using OpenTelemetry for unified logs, metrics, and traces. Developed a centralized notifications system with in-app center, Firebase push, and admin panel, achieving 97% + real-time delivery to 100+ users. Managed production stack(frontend, backend, MongoDB) on VPS with Dokploy and GitHub Actions CI/ CD, enabling automated zero-downtime blue-green deployments.",
+      description: [
+        "Built and deployed a full-stack observability platform with Grafana Cloud (Loki, Prometheus/Mimir, Tempo) using OpenTelemetry for unified logs, metrics, and traces.",
+        "Developed a centralized notifications system with in-app center, Firebase push, and admin panel, achieving 97% + real-time delivery to 100+ users.",
+        "Managed production stack(frontend, backend, MongoDB) on VPS with Dokploy and GitHub Actions CI/ CD, enabling automated zero-downtime blue-green deployments.",
+      ],
     },
   ],
   education: [
