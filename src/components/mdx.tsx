@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import { LinkIcon } from "lucide-react";
+
 function Table({ data }: { data: { headers: string[]; rows: string[][] } }) {
   let headers = data.headers.map((header, index) => (
     <th key={index}>{header}</th>
@@ -61,17 +63,14 @@ function slugify(str: string) {
 function createHeading(level: number) {
   const Heading = ({ children }: { children: React.ReactNode }) => {
     let slug = slugify(children as string);
-    return React.createElement(
-      `h${level}`,
-      { id: slug },
-      [
-        React.createElement("a", {
-          href: `#${slug}`,
-          key: `link-${slug}`,
-          className: "anchor",
-        }),
-      ],
-      children,
+    const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+    return (
+      <Tag id={slug} className="group">
+        <a href={`#${slug}`} className="flex items-center gap-2 w-fit">
+          {children}
+          <LinkIcon className="size-4 text-muted-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        </a>
+      </Tag>
     );
   };
   Heading.displayName = `Heading${level}`;
