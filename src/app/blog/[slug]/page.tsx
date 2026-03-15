@@ -18,7 +18,7 @@ export async function generateMetadata({
   };
 }): Promise<Metadata | undefined> {
   const post = await getPost(params.slug);
-  
+
   if (!post) {
     return undefined;
   }
@@ -43,11 +43,13 @@ export async function generateMetadata({
       type: "article",
       publishedTime,
       url: `${DATA.url}/blog/${post.slug}`,
+      images: [`/${post.slug}/opengraph-image.png`],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [`/${post.slug}/opengraph-image.png`],
     },
   };
 }
