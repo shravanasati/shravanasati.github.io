@@ -108,7 +108,7 @@ export async function markdownToHTML(markdown: string) {
 }
 
 export async function getPost(slug: string) {
-  const filePath = path.join("content", `${slug}.mdx`);
+  const filePath = path.join(process.cwd(), "content", `${slug}.mdx`);
   if (!fs.existsSync(filePath)) {
     return null;
   }
