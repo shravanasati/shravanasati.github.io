@@ -105,36 +105,36 @@ Let's start breaking down the pipeline now.
 
 ### User Query
 
-The user query is processed by converting it into a embedding so that it can be compared with other journal embeddings present in the vector database.
+The user query is processed by converting it into an embedding so that it can be compared with other journal embeddings present in the vector database.
 
 ### NLU Engine
 
-The NLU (Natural Language Understanding) Engine is a lightweight LLM which is tasked with extracting structured information from the prompt. The information includes potential date ranges ("which movie did I watch in September" -> 01/09/25...30/09/25) and emotions ("when and why was I surprised"). I used the few-shot prompting technique to steer the model towards the kind of extraction behavior I wanted from the model. Few-shot prompting basically adds a few examples in the system prompt.
+The NLU (Natural Language Understanding) Engine is a lightweight LLM that is tasked with extracting structured information from the prompt. The information includes potential date ranges ("which movie did I watch in September" -> 01/09/25...30/09/25) and emotions ("when and why was I surprised"). I used the few-shot prompting technique to steer the model towards the kind of extraction behavior I wanted from the model. Few-shot prompting basically adds a few examples in the system prompt.
 
-I used Spring AI's [entity response](https://spring.io/blog/2024/05/09/spring-ai-structured-output) method here which automatically converts the desired output class into a JSON schema, and validates and parses the LLM response into the class we want.
+I used Spring AI's [entity response](https://spring.io/blog/2024/05/09/spring-ai-structured-output) method here, which automatically converts the desired output class into a JSON schema, and validates and parses the LLM response into the class we want.
 
 ### Retriever
 
-The output from NLU engine is passed into the retriever along with the embedding of the user query. It dynamically generates a SQL query to fetch the user's journals that lie within the date range and has emotions (if detected by the NLU engine), and ranks them by their distance to the query embedding in ascending order.
+The output from the NLU engine is passed into the retriever along with the embedding of the user query. It dynamically generates a SQL query to fetch the user's journals that lie within the date range and has emotions (if detected by the NLU engine), and ranks them by their distance to the query embedding in ascending order.
 
-The Criteria API provided by Hibernate was very useful with this task. But this is not the final step.
+The Criteria API provided by Hibernate was very useful for this task. But this is not the final step.
 
 ### Knee Detection
 
-Previously, the amount of journals was hardcapped to a limit. The same number of journals were always injected into the context, regardless of the query and their relevance to the query. I observed from the query patterns that answers to the queries often lie in a single journal, and seldomly more than 5. 
+Previously, the amount of journals was hardcapped to a limit. The same number of journals were always injected into the context, regardless of the query and their relevance to the query. I observed from the query patterns that answers to the queries often lie in a single journal, and seldom more than 5. 
 
 This was an optimization problem: the RAG retriever had to feed just enough journals to the LLM such that the LLM had enough context without spamming its history with irrelevant journals.
 
 ![graph of relevance vs journal](/reverie-chat-pipeline/journal_relevance.png)
 
-The Y axis represents the cosine distance of the user query with each document (journal) and X axis is just the index of journals. You can see how quickly the distance falls, implying that only a select first few journals are actually relevant to the query.
+The Y axis represents the cosine similarity of the user query with each document (journal), and the X axis is just the index of journals. You can see how quickly the similarity falls, implying that only a select few journals are actually relevant to the query.
 
 The problem then is how to find the knee point of the curve, the point of diminishing returns. A knee in computing is a critical point in a system beyond which the costs of adding more resources outweigh their benefits. I chose the [Kneedle](https://ieeexplore.ieee.org/document/5961514) algorithm to find the knee point. Kneedle is an algorithm that finds the maximum curvature in a data set. I couldn't find a suitable Java implementation for my use case that supported all Kneedle input parameters, so I wrote [my own library](https://github.com/shravanasati/kneedle4j) and open-sourced it, ported from the Python [Kneed](https://pypi.org/project/kneed/) library.
 
 
 ### Response Generation
 
-The hard part is over. Once we have the relevant journals ready, we just inject them into the prompt and ask the LLM to answer the user query based on the provided journals. Again, Spring AI does the heavylifting here.
+The hard part is over. Once we have the relevant journals ready, we just inject them into the prompt and ask the LLM to answer the user query based on the provided journals. Again, Spring AI does the heavy lifting here.
 
 
 ## Limitations
