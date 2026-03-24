@@ -7,7 +7,9 @@ draft: true
 
 I have a dual boot setup between Windows and Linux, and I work with web servers on both of those systems. I often find myself killing processes that own a certain port. While it is trivial to do on Linux with `fuser port/tcp`, I have to google this abhorrent powershell command everytime I need to do this on Windows: 
 
-`Get-Process -Id (Get-NetTCPConnection -LocalPort <port>).OwningProcess`
+```
+Get-Process -Id (Get-NetTCPConnection -LocalPort <port>).OwningProcess
+```
 
 That's when I thought I should make a cross-platform port killer tool, so that I can get a consistent command on both Linux and Windows. I also wanted to write the tool from scratch, and not shell out commands to existing tools. This way, I'd learn about how it actually works under the hood. Performance was not the initial concern, but you'll soon find how it turned out to be 8x faster than fuser and 4x faster than lsof. This blog intends to cover the port-to-process discovery and termination semantics on both these operating systems, and some performance optimizations I did to make the tool even faster.
 
