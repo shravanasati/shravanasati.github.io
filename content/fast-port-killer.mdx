@@ -1,0 +1,29 @@
+---
+title: "Writing a superfast port killer"
+publishedAt: "2026-03-24"
+summary: In this blog, I dive deep into how port-owning processes are discovered and killed on Linux and Windows, and how to do it fast.
+draft: true
+---
+
+I have a dual boot setup between Windows and Linux, and I work with web servers on both of those systems. I often find myself killing processes that own a certain port. While it is trivial to do on Linux with `fuser port/tcp`, I have to google this abhorrent powershell command everytime I need to do this on Windows: 
+
+`Get-Process -Id (Get-NetTCPConnection -LocalPort <port>).OwningProcess`
+
+That's when I thought I should make a cross-platform port killer tool, so that I can get a consistent command on both Linux and Windows. I also wanted to write the tool from scratch, and not shell out commands to existing tools. This way, I'd learn about how it actually works under the hood. Performance was not the initial concern, but you'll soon find how it turned out to be 8x faster than fuser and 4x faster than lsof. This blog intends to cover the port-to-process discovery and termination semantics on both these operating systems, and some performance optimizations I did to make the tool even faster.
+
+For the impatient, here's the [repo](https://github.com/shravanasati/rekt). The tool is named **rekt**. 
+
+## Linux 
+
+My initial assumption was that both Linux and Windows might expose some syscall that allows us to discover the process ID of the port-occupying process directly. While I was kinda right with this assumption with Windows, I couldn't be more wrong with this on Linux.
+
+Linux exposes a virtual file system named `/proc` which represents the current state of the kernel. A lot of information about the hardware and currently running processes are present in this directory. A sub-directory named `net` contains information about networking parameters and statistics. Under this directory, four files are of importance to us: `/proc/net/{tcp,tcp6,udp,udp6}`. These files contain the kernel socket table. The four files are differentiated by the transport layer and the internet layer the sockets inside them are operating on.
+
+Here's how a socket table entry looks like: (from `/proc/net/tcp`)
+
+```
+sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode
+0: 3600007F:0035 00000000:0000 0A 00000000:00000000 00:00000000 00000000   193        0 26626 1 000000000cde931e 100 0 0 10 5
+```
+
+From this table, the hex-encoded `local_address`, `st` (state) and `inode` are critical to finding out the process owning the port.
