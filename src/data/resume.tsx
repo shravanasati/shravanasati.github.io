@@ -248,7 +248,7 @@ export const DATA = {
       dates: "Feb 2021 - May 2021",
       href: "https://pypi.org/project/pyscreenrec",
       description:
-        "A lightweight and cross-platform python library to record screen. Downloaded over 100k times on PyPI.",
+        "A lightweight and cross-platform python library to record screen. Downloaded over 130k times on PyPI.",
       technologies: ["python", "library", "opencv"],
       links: [
         {
@@ -324,16 +324,15 @@ export const DATA = {
       image: "/projects/squirrel.png",
     },
     {
-      title: "stella",
-      dates: "Jun 2021 - July 2024",
-      href: "https://github.com/shravanasati/stellapy",
-      description:
-        "CLI utility to streamline your web development experience - live reload for the terminal as well as browser.",
-      technologies: ["python", "cli"],
+      title: "rekt",
+      dates: "March 2026",
+      href: "https://github.com/shravanasati/rekt",
+      description: "A superfast cross-platform port killer.",
+      technologies: ["go", "cli"],
       links: [
         {
           type: "GitHub",
-          href: "https://github.com/shravanasati/stellapy",
+          href: "https://github.com/shravanasati/rekt",
           icon: <Icons.github className="size-3" />,
         },
       ],
@@ -551,6 +550,22 @@ export const DATA = {
       image: "",
     },
     {
+      title: "stella",
+      dates: "Jun 2021 - July 2024",
+      href: "https://github.com/shravanasati/stellapy",
+      description:
+        "CLI utility to streamline your web development experience - live reload for the terminal as well as browser.",
+      technologies: ["python", "cli"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/stellapy",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
       title: "sasha",
       dates: "Nov 2025",
       href: "",
@@ -591,6 +606,21 @@ export const DATA = {
         {
           type: "GitHub",
           href: "https://github.com/shravanasati/rotom",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "provisionary",
+      dates: "Feb 2026",
+      href: "",
+      description: "An automated Kubernetes-based platform to provision and manage WooCommerce stores using Helm charts. ",
+      technologies: ["go", "kubernetes"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/provisionary",
           icon: <Icons.github className="size-3" />,
         },
       ],
@@ -647,11 +677,11 @@ export const DATA = {
       // win: "Best Data Hack",
       // mlh: "https://s3.amazonaws.com/logged-assets/trust-badge/2018/white.svg",
       links: [
-        // {
-        //   title: "YouTube",
-        //   icon: <Icons.globe className="h-4 w-4" />,
-        //   href: "https://drive.google.com/file/d/1AkwbuCIhst8KurZCaxvZRYivRC6pbbYo/view?usp=drivesdk",
-        // },
+        {
+          title: "Website",
+          icon: <Icons.globe className="h-4 w-4" />,
+          href: "https://odoo-cafe.vercel.app",
+        },
       ],
       image: "",
     },
