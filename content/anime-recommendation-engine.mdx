@@ -1,0 +1,30 @@
+---
+title: "Writing a superfast port killer"
+publishedAt: "2026-03-26"
+summary: In this blog, I dive deep into how port-owning processes are discovered and killed on Linux and Windows, and how to do it fast.
+draft: true
+---
+
+recommendations yay
+
+## Architecture
+
+two tower retrieval
+ranking
+no ml
+
+## Implementation
+
+### Data Collection
+
+I first searched Kaggle and GitHub for existing datasets, but they were either small, outdated or didn't have enough information that I needed for the recommendation engine.
+I'd have to do it myself.
+I initially tried the Jikan API because MyAnimeList API actually sucks. 
+But it was rate limited at 60 reqs/min.
+On a single machine, it would have taken minimum 18+ hours to scan the entire range.
+I spun up 4 cloud VMs (4$ 512mb ram) and implemented interval splitting for the scan range. That should theoretically cut the total time by 4x.
+I left the process running on the VM and came back to it 2 hours later.
+Turns out the process was not running anymore, and it stopped at barely 800 rows. I restarted it and checked again an hour later. Stopped at 1000. 
+My assumption was correct, OOM killer killed the process. I optimized the memory by not building entire pandas dataframes and writing batches in append mode to the CSV file. I also created a systemd service unit that would automatically restart on failure.
+But it was still slow. I had used animec earlier (web scraping yay), but it was missing functionality. So I patched it up to support the full API spec. 
+And then deployed the scraper on the VMs. It was 7x faster. I imagine it is easier on MAL side too cuz HTML is easy to serve via CDNs.
