@@ -1,30 +1,53 @@
 ---
-title: "Writing a superfast port killer"
-publishedAt: "2026-03-26"
-summary: In this blog, I dive deep into how port-owning processes are discovered and killed on Linux and Windows, and how to do it fast.
+title: "Building an Anime Recommendation System"
+publishedAt: "2026-06-06"
+summary: In this blog, I share how I built an anime recommendation system from scratch using embeddings, vector search and 30000 anime.
 draft: true
 ---
 
-recommendations yay
+I am a big time weeb. And having watched lots of anime, it's hard to find new, good ones. Everybody on Reddit recommends the same old ones, which I've already watched. MyAnimeList has a collaborative recommendation system for each anime, but instead of looking at each anime's recommendations, I'd rather have it based on my existing animelist. Recommendation systems have always piqued my curiosity, so it was also time to quench it.
 
 ## Architecture
 
-two tower retrieval
-ranking
-no ml
+Recommendation systems usually come in two varieties: collaborative and content-based. Collaborative recommenders take knowledge of user's past actions as well as the ones made by other users. Content based recommenders on the other hand, utilize the information and features of an item to filter items.
+
+Each kind has its tradeoffs: collaborative recommenders suffer from cold start issues, which cause new items (which haven't been used) to not occur in any recommendations, and content-based recommenders are limited in scope, since they can only make recommendations that are similar to the initial seed.
+
+I chose to go forward with content based systems, since user-anime interactions dataset is hard to come by (as I figured later, anime dataset was also hard to come by). I chose a two step recomendation process, comprised of retrieval and ranking.
+
+![architecture diagram](/anime-recommendation-system/opengraph-image.png)
+
+The retrieval is based on a two tower model. The anime tower will encode the anime's features, and the user tower will encode the animelist's features. The encoding will be performed by an embedding model ([bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5)) in a shared vector space. Cosine similarity will be used to measure the relevance between a user and an anime.
+
+The ranking is completely heurestic-based. The candidate set fetched by the retriever will be scored according to domain informed heurestics like popularity, MAL score, relation and so on. Its job is to boost items based on their metadata, which vector search often misses.
+
 
 ## Implementation
 
 ### Data Collection
 
-I first searched Kaggle and GitHub for existing datasets, but they were either small, outdated or didn't have enough information that I needed for the recommendation engine.
-I'd have to do it myself.
-I initially tried the Jikan API because MyAnimeList API actually sucks. 
-But it was rate limited at 60 reqs/min.
-On a single machine, it would have taken minimum 18+ hours to scan the entire range.
-I spun up 4 cloud VMs (4$ 512mb ram) and implemented interval splitting for the scan range. That should theoretically cut the total time by 4x.
-I left the process running on the VM and came back to it 2 hours later.
-Turns out the process was not running anymore, and it stopped at barely 800 rows. I restarted it and checked again an hour later. Stopped at 1000. 
-My assumption was correct, OOM killer killed the process. I optimized the memory by not building entire pandas dataframes and writing batches in append mode to the CSV file. I also created a systemd service unit that would automatically restart on failure.
-But it was still slow. I had used animec earlier (web scraping yay), but it was missing functionality. So I patched it up to support the full API spec. 
-And then deployed the scraper on the VMs. It was 7x faster. I imagine it is easier on MAL side too cuz HTML is easy to serve via CDNs.
+I needed an anime dataset that 
+- had all the features I wanted
+- was reasonably new
+- was reasonably large
+
+I first searched Kaggle and GitHub for existing datasets, but they were either small, outdated or didn't have enough information that I needed for the recommendation engine. The largest dataset I found had 23k rows, but was cutoff at 2023 (some of my favorite anime have been recent).
+
+It didn't take my long to realize that I'd have to collect the data myself. So, I set off to write a scraper. The problem was, no service offered bulk anime data, nor did any service provide a way to get all anime IDs. And, MAL ID generation is totally inconsistent. Although the IDs are numeric, they aren't consecutive. So I decided to scan the entire range of 1-65000.
+
+
+I initially tried the Jikan API because MyAnimeList API totally sucks (don't ask me how I know), but it was rate limited at 60 reqs/min. On a single machine, it would have taken minimum 18+ hours (65000/(60*60)) to scan the entire range. And that's considering all the requests succeed.
+
+I provisioned 4 cloud VMs (4$/mo 512mb ram each) and implemented interval splitting for the scan range. That should theoretically cut the total time by 4x.
+
+I setup the scraper on each VM and left the process running on them and came back to it 2 hours later. Turns out the process was not running anymore, and it stopped at barely 800 rows. I restarted it and checked again an hour later. Again, stopped at 1000 rows.
+
+My assumption was correct, the OOM killer kept killing the process (verified using `dmesg`). I optimized the memory by not building entire pandas dataframes in memory, and writing batches in append mode to the CSV file. I also created a systemd service unit that would automatically restart the service on failure.
+
+But it was still slow. I had used a library named [animec](https://github.com/Tanishquasar/animec) earlier and also contributed to it. It utilized web scraping yay to fetch MAL data, but it was missing functionality. So I patched it up match the API response structure. Locally, it was 7x faster. I imagine it is easier on MAL side too cuz HTML is easy to serve via CDNs.
+
+I deployed the update scraper. Got the VM IP blacklisted within minutes. All requests were failing. It was glorious. I suppose I should've used rotating proxies, user agents or some other anti-anti-scraping measures to avoid getting blacklisted. Reverted back to Jikan and let it run overnight. 
+
+Checked in 12 hours later -> everything finished. So I downloaded the data, merged the shards, and performed deduplication and sorting. Cost a grand total of 0.60$. Cloud computing yayy!
+
+The resulting dataset is 30440 rows long. 23 features. The biggest anime dataset yet (that I was able to find). It exists on [Kaggle](https://www.kaggle.com/datasets/shravanasati/anime-data) with all its glory.
