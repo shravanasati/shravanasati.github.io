@@ -51,3 +51,44 @@ I deployed the update scraper. Got the VM IP blacklisted within minutes. All req
 Checked in 12 hours later -> everything finished. So I downloaded the data, merged the shards, and performed deduplication and sorting. Cost a grand total of 0.60$. Cloud computing yayy!
 
 The resulting dataset is 30440 rows long. 23 features. The biggest anime dataset yet (that I was able to find). It exists on [Kaggle](https://www.kaggle.com/datasets/shravanasati/anime-data) with all its glory.
+
+
+### Embedding Generation
+
+Half the battle was over. The next task was to generate embeddings for the entire dataset, and store them in a vector database. I chose [qdrant](qdrant.tech), primarly because it was easy to run locally with a docker image, and it was quite feature-rich. I chose the `bge-small-en-v1.5` model because it was fast and small to run locally. I also chose the `fastembed` library to run the model, also developed my qdrant, because it uses a ONNX runtime.
+
+These are the techniques I employed enhance the speed and throughput of embedding generation:
+
+- Using a small embedding model (output dimensions are just 384)
+
+- Using batched inference (with a `batch_size` of 256)
+
+- Using all the cores (`parallel` set to 0)
+
+- Using quantization (supported out of the box in qdrant), specifically Turboquant, a quantization technique recently developed by Google that compresses the embeddings with near zero recall drop
+
+- Disabling the HNSW index creation (`m` set to 0) during the ingestion process
+
+Qdrant had a really good documentation, and specifically the guides covering real world tasks. All these techniques mentioned above are written in Qdrant docs. [link1](https://qdrant.tech/documentation/fastembed/fastembed-optimize/) [link2](https://qdrant.tech/course/essentials/day-4/large-scale-ingestion/)
+
+```py
+def _row_to_doc(row: dict) -> str:
+	parts = [
+		("Title", row.get("title", "")),
+		("Alt title (EN)", row.get("alt_title_en", "")),
+		("Alt title (JP)", row.get("alt_title_jp", "")),
+		("Synopsis", row.get("synopsis", "")),
+		("Genres", row.get("genres", "")),
+		("Themes", row.get("themes", "")),
+		("Demographics", row.get("demographics", "")),
+		("Studios", row.get("studios", "")),
+		("Type", row.get("media_type", "")),
+		("Status", row.get("status", "")),
+		("Rating", row.get("rating", "")),
+	]
+	lines = [f"{label}: {value}" for label, value in parts if value]
+	return "\n".join(lines)
+```
+
+
+### Recommendation Engine
