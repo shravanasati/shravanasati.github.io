@@ -5,11 +5,11 @@ summary: In this blog, I share how I built an anime recommendation system from s
 draft: true
 ---
 
-I am a big time weeb. And having watched lots of anime, it's hard to find new, good ones. Everybody on Reddit recommends the same old ones, which I've already watched. MyAnimeList has a collaborative recommendation system for each anime, but instead of looking at each anime's recommendations, I'd rather have it based on my existing animelist. Recommendation systems have always piqued my curiosity, so it was also time to quench it.
+I am a big time weeb. Having watched lots of anime, it's hard to find new, good ones. Everybody on Reddit recommends the same old ones, the ones I've already watched. MyAnimeList has a collaborative recommendation system for each anime, but instead of looking at each anime's recommendations, I'd rather have it based on my existing animelist. Recommendation systems have always piqued my curiosity, so it was also time to quench it.
 
 ## Architecture
 
-Recommendation systems usually come in two varieties: collaborative and content-based. Collaborative recommenders take knowledge of user's past actions as well as the ones made by other users. Content based recommenders on the other hand, utilize the information and features of an item to filter items.
+Recommendation systems usually come in two varieties: collaborative and content-based. Collaborative recommenders take knowledge of user's past actions as well as the ones made by other users. Content based recommenders on the other hand, utilize the information and features of an item to filter other items.
 
 Each kind has its tradeoffs: collaborative recommenders suffer from cold start issues, which cause new items (which haven't been used) to not occur in any recommendations, and content-based recommenders are limited in scope, since they can only make recommendations that are similar to the initial seed.
 
@@ -17,9 +17,9 @@ I chose to go forward with content based systems, since user-anime interactions 
 
 ![architecture diagram](/anime-recommendation-system/opengraph-image.png)
 
-The retrieval is based on a two tower model. The anime tower will encode the anime's features, and the user tower will encode the animelist's features. The encoding will be performed by an embedding model ([bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5)) in a shared vector space. Cosine similarity will be used to measure the relevance between a user and an anime.
+The retrieval is based on a two tower model. The anime tower will encode the anime's features, and the user tower will encode the animelist's features. The encoding will be performed by an embedding model ([bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5)) in a shared vector space. Cosine similarity will be used to measure the relevance between a userlist's average vector and an anime.
 
-The ranking is completely heurestic-based. The candidate set fetched by the retriever will be scored according to domain informed heurestics like popularity, MAL score, relation and so on. Its job is to boost items based on their metadata, which vector search often misses.
+The ranking is heurestic-based. The candidate set fetched by the retriever will be scored according to domain informed heurestics like popularity, MAL score, relation and so on. The ranker's job is to boost items based on their metadata, which vector search often misses.
 
 
 ## Implementation
@@ -31,7 +31,7 @@ I needed an anime dataset that
 - was reasonably new
 - was reasonably large
 
-I first searched Kaggle and GitHub for existing datasets, but they were either small, outdated or didn't have enough information that I needed for the recommendation engine. The largest dataset I found had 23k rows, but was cutoff at 2023 (some of my favorite anime have been recent).
+I first searched Kaggle and GitHub for existing datasets, but they were either small, outdated or didn't have enough information that I needed for the recommendation engine. The largest dataset I found had 23k rows, but was cutoff at 2023 (some of my favorite anime have been more recent).
 
 It didn't take my long to realize that I'd have to collect the data myself. So, I set off to write a scraper. The problem was, no service offered bulk anime data, nor did any service provide a way to get all anime IDs. And, MAL ID generation is totally inconsistent. Although the IDs are numeric, they aren't consecutive. So I decided to scan the entire range of 1-65000.
 
@@ -40,22 +40,22 @@ I initially tried the Jikan API because MyAnimeList API totally sucks (don't ask
 
 I provisioned 4 cloud VMs (4$/mo 512mb ram each) and implemented interval splitting for the scan range. That should theoretically cut the total time by 4x.
 
-I setup the scraper on each VM and left the process running on them and came back to it 2 hours later. Turns out the process was not running anymore, and it stopped at barely 800 rows. I restarted it and checked again an hour later. Again, stopped at 1000 rows.
+I setup the scraper on each VM and left the process running on them and came back to it 2 hours later. Turns out the process was not running anymore, and it stopped after processing barely 800 rows. I restarted it and checked again an hour later. Again, stopped at 1000 rows.
 
 My assumption was correct, the OOM killer kept killing the process (verified using `dmesg`). I optimized the memory by not building entire pandas dataframes in memory, and writing batches in append mode to the CSV file. I also created a systemd service unit that would automatically restart the service on failure.
 
-But it was still slow. I had used a library named [animec](https://github.com/Tanishquasar/animec) earlier and also contributed to it. It utilized web scraping yay to fetch MAL data, but it was missing functionality. So I patched it up match the API response structure. Locally, it was 7x faster. I imagine it is easier on MAL side too cuz HTML is easy to serve via CDNs.
+But it was still slow. I had used a library named [animec](https://github.com/Tanishquasar/animec) earlier and also contributed to it. It utilized web scraping to fetch MAL data, but it was missing functionality. So I patched it up match the API response structure. Locally, it was 7x faster. I imagine it is easier on MAL side too cuz HTML is easy to serve via CDNs.
 
 I deployed the update scraper. Got the VM IP blacklisted within minutes. All requests were failing. It was glorious. I suppose I should've used rotating proxies, user agents or some other anti-anti-scraping measures to avoid getting blacklisted. Reverted back to Jikan and let it run overnight. 
 
 Checked in 12 hours later -> everything finished. So I downloaded the data, merged the shards, and performed deduplication and sorting. Cost a grand total of 0.60$. Cloud computing yayy!
 
-The resulting dataset is 30440 rows long. 23 features. The biggest anime dataset yet (that I was able to find). It exists on [Kaggle](https://www.kaggle.com/datasets/shravanasati/anime-data) with all its glory.
+The resulting dataset is 30440 rows long. 23 features. The biggest anime dataset yet (that I was able to find). It exists on [Kaggle](https://www.kaggle.com/datasets/shravanasati/anime-data) with all its glory (aka null values). The cleaned dataset exists on [GitHub](https://github.com/shravanasati/animeviz).
 
 
 ### Embedding Generation
 
-Half the battle was over. The next task was to generate embeddings for the entire dataset, and store them in a vector database. I chose [qdrant](qdrant.tech), primarly because it was easy to run locally with a docker image, and it was quite feature-rich. I chose the `bge-small-en-v1.5` model because it was fast and small to run locally. I also chose the `fastembed` library to run the model, also developed my qdrant, because it uses a ONNX runtime.
+Half the battle was over. The next task was to generate embeddings for the entire dataset, and store them in a vector database. I chose [qdrant](qdrant.tech), primarly because it was easy to run locally with a docker image, and it was quite feature-rich. I chose the `bge-small-en-v1.5` model because it was fast and small to run locally. I also chose the `fastembed` library to run the model, also developed my qdrant, because it uses a fast ONNX model runtime.
 
 These are the techniques I employed enhance the speed and throughput of embedding generation:
 
@@ -65,11 +65,13 @@ These are the techniques I employed enhance the speed and throughput of embeddin
 
 - Using all the cores (`parallel` set to 0)
 
-- Using quantization (supported out of the box in qdrant), specifically Turboquant, a quantization technique recently developed by Google that compresses the embeddings with near zero recall drop
+- Using quantization (supported out of the box in qdrant), specifically Turboquant, a quantization technique recently developed by Google that compresses the embeddings upto 32x with near zero recall drop
 
 - Disabling the HNSW index creation (`m` set to 0) during the ingestion process
 
-Qdrant had a really good documentation, and specifically the guides covering real world tasks. All these techniques mentioned above are written in Qdrant docs. [link1](https://qdrant.tech/documentation/fastembed/fastembed-optimize/) [link2](https://qdrant.tech/course/essentials/day-4/large-scale-ingestion/)
+Qdrant had a really good documentation, and the guides cover numerous real world tasks. All these techniques mentioned above are written in Qdrant docs. [link1](https://qdrant.tech/documentation/fastembed/fastembed-optimize/) [link2](https://qdrant.tech/course/essentials/day-4/large-scale-ingestion/)
+
+The text features of the anime were chosen for the embedding content. Numeric features were skipped as they don't contribute much to the vector search.
 
 ```py
 def _row_to_doc(row: dict) -> str:
@@ -91,4 +93,9 @@ def _row_to_doc(row: dict) -> str:
 ```
 
 
-### Recommendation Engine
+After the seeding was finished, I re-enabled Qdrant's HNSW index by setting `m` to 16.
+
+
+### Retrieval
+
+### Ranking
