@@ -2,7 +2,6 @@
 title: "Building an Anime Recommendation System"
 publishedAt: "2026-06-06"
 summary: In this blog, I share how I built an anime recommendation system from scratch using embeddings, vector search and 30000 anime.
-draft: true
 ---
 
 I am a big time weeb. Having watched lots of anime, it's hard to find new, good ones. Everybody on Reddit recommends the same old ones, the ones I've already watched. MyAnimeList has a collaborative recommendation system for each anime, but instead of looking at each anime's recommendations, I'd rather have it based on my existing animelist. Recommendation systems have always piqued my curiosity, so it was also time to quench it.
@@ -92,10 +91,35 @@ def _row_to_doc(row: dict) -> str:
 	return "\n".join(lines)
 ```
 
+Apart from the embeddings, the anime metadata is attached as payload, which helps in metadata filtering during searches.
 
 After the seeding was finished, I re-enabled Qdrant's HNSW index by setting `m` to 16.
 
 
 ### Retrieval
 
+The retriever takes the user animelist as an input. It grabs all the anime IDs from the userlist, and embeds those anime records from the dataset.
+
+Those embeddings are then averaged into one (the "user tower"). The average is weighted and influenced by the user-given score, progress (number of episodes watched), recency and the anime status (completed/on hold/dropped/watching).
+
+Using the averaged vector, a similarity search is performed on the vector DB. The search query has filters for NSFW genres, and against the anime IDs user has already watched.
+
+
 ### Ranking
+
+The retriever fetches a large candidate set (200 items). The ranker scores the candidates based on certain domain-informed heurestics, and returns the 20 best ones.
+
+The ranking takes in account the cosine similarity score, MAL score of the anime, popularity statistic, release date and related entries. Related entries (sequels, prequels, side stories, etc.) are boosted highly.
+
+All these huerestic weights are tunable; and I plan to train an ML model later to optimize these parameters once I have enough user feedback.
+
+After calculating the base scores, the ranker also diversifies the selection by not allowing genre overlap of more than 4 titles.
+
+
+### Conclusion
+
+I am happy with the current implementation. I might train it on user-anime interactions later to improve the ranker. I also need to experiment with the weights for retriever to find the optimal balance.
+
+I don't have enough cloud credits to deploy this project, but you can try it out by cloning the repo and running the server by yourself. All the code is present in this [repo](https://github.com/shravanasati/animeviz). 
+
+Now, back to watching anime.
