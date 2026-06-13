@@ -20,12 +20,12 @@ The retrieval is based on a two tower model. The anime tower will encode the ani
 
 The ranking is heurestic-based. The candidate set fetched by the retriever will be scored according to domain informed heurestics like popularity, MAL score, relation and so on. The ranker's job is to boost items based on their metadata, which vector search often misses.
 
-
 ## Implementation
 
 ### Data Collection
 
-I needed an anime dataset that 
+I needed an anime dataset that:
+
 - had all the features I wanted
 - was reasonably new
 - was reasonably large
@@ -33,7 +33,6 @@ I needed an anime dataset that
 I first searched Kaggle and GitHub for existing datasets, but they were either small, outdated or didn't have enough information that I needed for the recommendation engine. The largest dataset I found had 23k rows, but was cutoff at 2023 (some of my favorite anime have been more recent).
 
 It didn't take my long to realize that I'd have to collect the data myself. So, I set off to write a scraper. The problem was, no service offered bulk anime data, nor did any service provide a way to get all anime IDs. And, MAL ID generation is totally inconsistent. Although the IDs are numeric, they aren't consecutive. So I decided to scan the entire range of 1-65000.
-
 
 I initially tried the Jikan API because MyAnimeList API totally sucks (don't ask me how I know), but it was rate limited at 60 reqs/min. On a single machine, it would have taken minimum 18+ hours (65000/(60*60)) to scan the entire range. And that's considering all the requests succeed.
 
@@ -45,12 +44,11 @@ My assumption was correct, the OOM killer kept killing the process (verified usi
 
 But it was still slow. I had used a library named [animec](https://github.com/Tanishquasar/animec) earlier and also contributed to it. It utilized web scraping to fetch MAL data, but it was missing functionality. So I patched it up match the API response structure. Locally, it was 7x faster. I imagine it is easier on MAL side too cuz HTML is easy to serve via CDNs.
 
-I deployed the update scraper. Got the VM IP blacklisted within minutes. All requests were failing. It was glorious. I suppose I should've used rotating proxies, user agents or some other anti-anti-scraping measures to avoid getting blacklisted. Reverted back to Jikan and let it run overnight. 
+I deployed the update scraper. Got the VM IP blacklisted within minutes. All requests were failing. It was glorious. I suppose I should've used rotating proxies, user agents or some other anti-anti-scraping measures to avoid getting blacklisted. Reverted back to Jikan and let it run overnight.
 
 Checked in 12 hours later -> everything finished. So I downloaded the data, merged the shards, and performed deduplication and sorting. Cost a grand total of 0.60$. Cloud computing yayy!
 
 The resulting dataset is 30440 rows long. 23 features. The biggest anime dataset yet (that I was able to find). It exists on [Kaggle](https://www.kaggle.com/datasets/shravanasati/anime-data) with all its glory (aka null values). The cleaned dataset exists on [GitHub](https://github.com/shravanasati/animeviz).
-
 
 ### Embedding Generation
 
@@ -68,7 +66,7 @@ These are the techniques I employed enhance the speed and throughput of embeddin
 
 - Disabling the HNSW index creation (`m` set to 0) during the ingestion process
 
-Qdrant had a really good documentation, and the guides cover numerous real world tasks. All these techniques mentioned above are written in Qdrant docs. [link1](https://qdrant.tech/documentation/fastembed/fastembed-optimize/) [link2](https://qdrant.tech/course/essentials/day-4/large-scale-ingestion/)
+Qdrant had a really good documentation, and the guides cover numerous real world tasks. All these techniques mentioned above are written in Qdrant docs. ([link1](https://qdrant.tech/documentation/fastembed/fastembed-optimize/) [link2](https://qdrant.tech/documentation/tutorials-develop/bulk-upload/) [link3](https://qdrant.tech/course/essentials/day-4/large-scale-ingestion/))
 
 The text features of the anime were chosen for the embedding content. Numeric features were skipped as they don't contribute much to the vector search.
 
@@ -95,14 +93,55 @@ Apart from the embeddings, the anime metadata is attached as payload, which help
 
 After the seeding was finished, I re-enabled Qdrant's HNSW index by setting `m` to 16.
 
-
 ### Retrieval
 
 The retriever takes the user animelist as an input. It grabs all the anime IDs from the userlist, and embeds those anime records from the dataset.
 
 Those embeddings are then averaged into one (the "user tower"). The average is weighted and influenced by the user-given score, progress (number of episodes watched), recency and the anime status (completed/on hold/dropped/watching).
 
-Using the averaged vector, a similarity search is performed on the vector DB. The search query has filters for NSFW genres, and against the anime IDs user has already watched.
+The individual weights are multiplied to produce a final weight instead of adding them, so that only the titles that scored high across all dimensions influence the recommendations.
+
+```py
+weights = (
+	userlist["score_weight"]
+	* userlist["progress_weight"]
+	* userlist["recency_weight"]
+	* userlist["status_weight"]
+).to_numpy()
+```
+
+Using the averaged vector, a similarity search is performed on the vector DB. The search query has filters for NSFW genres, titles not yet aired, promotional videos/commercial messages/etc. , and against the anime IDs user has already watched.
+
+```py
+def search_similar_anime(
+	self,
+	vector: list[float],
+	userlist_ids: list[int],
+	limit: int,
+	disable_nsfw: bool,
+):
+	must_not_conditions = [
+		models.FieldCondition(key="id", match=models.MatchAny(any=userlist_ids)),
+		models.FieldCondition(key="media_type", match=models.MatchAny(any=["Unknown", "Music", "CM", "PV"])),
+		models.FieldCondition(key="status", match=models.MatchValue(value="Not yet aired")),
+	]
+
+	if disable_nsfw:
+		for ng in NSFW_GENRES:
+			must_not_conditions.append(
+				models.FieldCondition(
+					key="genres", match=models.MatchPhrase(phrase=ng)
+				)
+			)
+
+	return self.client.query_points(
+		QDRANT_COLLECTION,
+		query=vector,
+		with_payload=True,
+		limit=limit,
+		query_filter=models.Filter(must_not=must_not_conditions),
+	)
+```
 
 
 ### Ranking
@@ -113,13 +152,103 @@ The ranking takes in account the cosine similarity score, MAL score of the anime
 
 All these huerestic weights are tunable; and I plan to train an ML model later to optimize these parameters once I have enough user feedback.
 
-After calculating the base scores, the ranker also diversifies the selection by not allowing genre overlap of more than 4 titles.
+```py
+# each of these terms are multiplied with their respective terms beforehand
+base_score = (
+	sim_term
+	+ quality_term
+	+ popularity_term
+	+ novelty_term
+	+ time_term
+	+ related_term
+)
+```
 
+After calculating the base scores, the ranker also diversifies the selection by not allowing genre overlap of more than 4 titles. It does so by penalizing the genres whose counts have exceeded the threshold.
+
+
+### Improvements
+
+While the recommendation engine was working fine, I didn't like the vibes from recommendations. I would not watch the titles the recommendation system gave to me. This is how solved it.
+
+#### Latency Drop
+
+While not related to the recommendation quality, I was re-embedding the userlist titles instead of fetching the already generated embeddings from the vector DB. I don't know why I did that, but I fixed it right away. The latency dropped by 95%. This also solved the concern I had regarding deployment of this app. It won't need a GPU to process userlist embeddings, I just need to take a snapshot of the vector DB and migrate it to the cloud VM.
+
+#### Capturing Distinct Tastes
+
+The retriever finds similar anime by searching the vector space against an "averaged vector". While the average vector is weighted and is influenced by user-liked anime, it doesn't address the concerns of capturing the distinct taste profiles of the user.
+
+Consider this graph (this vector space has 384 dimensions, not 2, but bear with me): the user watches both battle shounen and romcoms. No matter the average vector, it will lie somewhere between those two taste profiles. That vector space might contain some other titles, which are not close to either battle shounen or romcoms. The average vector lies in a dead zone, or in a part where anime of some other genre exist (which the user might not watch).
+
+![average dead zone](/anime-recommendation-system/averag_dead_zone.png)
+
+
+The solution I implemented to address this issue is to perform a clustering over the userlist. The userlist will be divided into several clusters, each of which will capture a subset of the anime user watched. Then, that particular subset will be averaged (again, weighted) and a vector search will be performed. This way, we can recommend anime from multiple taste profiles the user might have.
+
+I used the KMeans clustering technique.
+
+```py
+k = max(1, min(4, len(normalized_embeddings) // 8))
+kmeans = KMeans(k, n_init=10, init="k-means++")
+cluster_labels = kmeans.fit_predict(normalized_embeddings)
+cluster_centroids = []
+for i in range(k):
+	cluster_mask = cluster_labels == i
+	cluster_embeds = clustering_embeddings[cluster_mask]
+	cluster_w = clustering_weights[cluster_mask]
+
+	# normalize internal weights for this specific cluster partition
+	w_sum = cluster_w.sum()
+	cluster_w = cluster_w / w_sum
+
+	weighted_centroid = np.average(cluster_embeds, weights=cluster_w, axis=0)
+	cluster_centroids.append(weighted_centroid)
+
+for centroid in cluster_centroids:
+	search_response = self.qdrant_store.search_similar_anime(
+		centroid.tolist(), userlist_ids, limit_per_cluster, opts.disable_nsfw
+	)
+```
+
+#### Reducing Franchise Spam
+
+The clustering improved the recommendation quality a ton: I was finally getting recommendations similar to the ones I've watched, and the ones I might actually watch. But it introduced another problem: franchise spam. 
+
+I've watched all the non-filler content of Attack On Titan and rated them highly. That led to half of my recomendations (12 out of 20) filled with AoT filler content like movies and OVAs. This was undesirable.
+
+The solution seemed obvious: the ranker needs to diversify the selection at franchise level just like it was doing already with genres. We need to group together titles of a particular franchise and assign them a `franchise_id` that uniquely identifies all the titles. We can then filter repetition by tracking the `franchise_id`. But another problem arises: how do you know that two particular anime belong to the same franchise? Text search is flaky, and might lead to high false negatives.
+
+Enter `related_entries`. This field already existed in the dataset. This is essentially a list of titles that are related to the current titles. The relation might be one of `sequel`, `prequel`, `side_story`, etc. 
+
+![related entries](/anime-recommendation-system/related_entries.png)
+
+This is essentially a [connected components](https://leetcode.com/problems/count-the-number-of-complete-components/description/) problem. The relations are edges between two titles. We have a graph in our hand. We need to isolate the subgraphs (components) and assign all the nodes within that subgraph a particular `franchise_id`. I chose to go with a [DSU](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) (disjoint set union) approach.
+
+```py
+for idx, relation_list in df["related_anime"].dropna().items():
+    for relation_str in relation_list.split(";"):
+        relation_str = relation_str.strip()
+        splitted = relation_str.split("|")
+        if len(splitted) != 3:
+            continue
+        id_, title, relation = splitted
+        try:
+            dsu.union(ids[idx], int(id_))
+        except KeyError:
+            continue
+
+df["franchise_id"] = df["id"].apply(dsu.find)
+```
+
+Then, I just needed the update the vector DB with this new payload and add penalty for franchise repetition in the ranker. It was fun implementing a leetcode solution in a real world problem. 
+
+Random trivia: There are 15743 unique franchise in my dataset (roughly half).
 
 ### Conclusion
 
-I am happy with the current implementation. I might train it on user-anime interactions later to improve the ranker. I also need to experiment with the weights for retriever to find the optimal balance.
+I am quite happy with the current implementation and satisfied with the current recomendation quality. I might train it on user-anime interactions later to improve the ranker. I also need to experiment with the weights for retriever to find the optimal balance.
 
-I don't have enough cloud credits to deploy this project, but you can try it out by cloning the repo and running the server by yourself. All the code is present in this [repo](https://github.com/shravanasati/animeviz). 
+I don't have enough cloud credits to deploy this project, but you can try it out by cloning the repo and running the server by yourself. All the code is present in this [repo](https://github.com/shravanasati/animeviz).
 
 Now, back to watching anime.
