@@ -4,7 +4,7 @@ publishedAt: "2026-06-06"
 summary: In this blog, I share how I built an anime recommendation system from scratch using embeddings, vector search and 30000 anime.
 ---
 
-I am a big time weeb. Having watched lots of anime, it's hard to find new, good ones. Everybody on Reddit recommends the same old ones, the ones I've already watched. MyAnimeList has a collaborative recommendation system for each anime, but instead of looking at each anime's recommendations, I'd rather have it based on my existing animelist. Recommendation systems have always piqued my curiosity, so it was also time to quench it.
+I am a big time weeb. Having watched lots of anime, it's hard to find new, good ones. Everybody on Reddit recommends the same old titles, the ones I've already watched. MyAnimeList has a collaborative recommendation system for each anime, but instead of looking at each anime's recommendations, I'd rather have it based on my existing animelist. Recommendation systems have always piqued my curiosity, so it was also time to quench it.
 
 ## Architecture
 
@@ -32,13 +32,13 @@ I needed an anime dataset that:
 
 I first searched Kaggle and GitHub for existing datasets, but they were either small, outdated or didn't have enough information that I needed for the recommendation engine. The largest dataset I found had 23k rows, but was cutoff at 2023 (some of my favorite anime have been more recent).
 
-It didn't take my long to realize that I'd have to collect the data myself. So, I set off to write a scraper. The problem was, no service offered bulk anime data, nor did any service provide a way to get all anime IDs. And, MAL ID generation is totally inconsistent. Although the IDs are numeric, they aren't consecutive. So I decided to scan the entire range of 1-65000.
+It didn't take me long to realize that I'd have to collect the data myself. So, I set off to write a scraper. The problem was, no service offered bulk anime data, nor did any service provide a way to get all anime IDs. And, MAL ID generation is totally inconsistent. Although the IDs are numeric, they aren't consecutive. So I decided to scan the entire range of 1-65000.
 
 I initially tried the Jikan API because MyAnimeList API totally sucks (don't ask me how I know), but it was rate limited at 60 reqs/min. On a single machine, it would have taken minimum 18+ hours (65000/(60*60)) to scan the entire range. And that's considering all the requests succeed.
 
 I provisioned 4 cloud VMs (4$/mo 512mb ram each) and implemented interval splitting for the scan range. That should theoretically cut the total time by 4x.
 
-I setup the scraper on each VM and left the process running on them and came back to it 2 hours later. Turns out the process was not running anymore, and it stopped after processing barely 800 rows. I restarted it and checked again an hour later. Again, stopped at 1000 rows.
+I setup the scraper on each VM and left the process running on them and came back to it 2 hours later. Turns out the process was not running anymore, and it stopped after processing barely 800 rows. I restarted it and checked again an hour later. Again, the scraper stopped at 1000 rows.
 
 My assumption was correct, the OOM killer kept killing the process (verified using `dmesg`). I optimized the memory by not building entire pandas dataframes in memory, and writing batches in append mode to the CSV file. I also created a systemd service unit that would automatically restart the service on failure.
 
@@ -54,7 +54,7 @@ The resulting dataset is 30440 rows long. 23 features. The biggest anime dataset
 
 Half the battle was over. The next task was to generate embeddings for the entire dataset, and store them in a vector database. I chose [qdrant](qdrant.tech), primarly because it was easy to run locally with a docker image, and it was quite feature-rich. I chose the `bge-small-en-v1.5` model because it was fast and small to run locally. I also chose the `fastembed` library to run the model, also developed my qdrant, because it uses a fast ONNX model runtime.
 
-These are the techniques I employed enhance the speed and throughput of embedding generation:
+These are the techniques I employed to enhance the speed and throughput of embedding generation:
 
 - Using a small embedding model (output dimensions are just 384)
 
@@ -146,11 +146,9 @@ def search_similar_anime(
 
 ### Ranking
 
-The retriever fetches a large candidate set (200 items). The ranker scores the candidates based on certain domain-informed heurestics, and returns the 20 best ones.
+The retriever fetches a large candidate set (300 items). The ranker scores the candidates based on certain domain-informed heurestics, and returns the 20 best ones.
 
 The ranking takes in account the cosine similarity score, MAL score of the anime, popularity statistic, release date and related entries. Related entries (sequels, prequels, side stories, etc.) are boosted highly.
-
-All these huerestic weights are tunable; and I plan to train an ML model later to optimize these parameters once I have enough user feedback.
 
 ```py
 # each of these terms are multiplied with their respective terms beforehand
@@ -169,17 +167,17 @@ After calculating the base scores, the ranker also diversifies the selection by 
 
 ### Improvements
 
-While the recommendation engine was working fine, I didn't like the vibes from recommendations. I would not watch the titles the recommendation system gave to me. This is how solved it.
+While the recommendation engine was working fine, I didn't like the vibes from recommendations. I would not watch the titles the recommendation system gave to me. This is how I improved the recommendations.
 
 #### Latency Drop
 
-While not related to the recommendation quality, I was re-embedding the userlist titles instead of fetching the already generated embeddings from the vector DB. I don't know why I did that, but I fixed it right away. The latency dropped by 95%. This also solved the concern I had regarding deployment of this app. It won't need a GPU to process userlist embeddings, I just need to take a snapshot of the vector DB and migrate it to the cloud VM.
+While not related to the recommendation quality, I was re-embedding the userlist titles instead of fetching the already generated embeddings from the vector DB. I don't know why I did that, but I fixed it right away. The latency dropped by 95%. This also solved the concern I had regarding deployment of this app. It won't need a GPU to process userlist embeddings, I just need to take a snapshot of the vector DB and migrate it to the cloud VM. This also made testing iterations quick (~48s -> ~2s).
 
 #### Capturing Distinct Tastes
 
 The retriever finds similar anime by searching the vector space against an "averaged vector". While the average vector is weighted and is influenced by user-liked anime, it doesn't address the concerns of capturing the distinct taste profiles of the user.
 
-Consider this graph (this vector space has 384 dimensions, not 2, but bear with me): the user watches both battle shounen and romcoms. No matter the average vector, it will lie somewhere between those two taste profiles. That vector space might contain some other titles, which are not close to either battle shounen or romcoms. The average vector lies in a dead zone, or in a part where anime of some other genre exist (which the user might not watch).
+Consider this graph (the vector space actually has 384 dimensions, not 2, but bear with me): the user watches both battle shounen and romcoms. No matter the weights, the average vector will lie somewhere between those two taste profiles. That part of the vector space might contain some other titles, which are not close to either battle shounen or romcoms. The average vector lies in a dead zone, or in a part where anime of some other genre exist (which the user might not watch).
 
 ![average dead zone](/anime-recommendation-system/averag_dead_zone.png)
 
@@ -219,7 +217,7 @@ I've watched all the non-filler content of Attack On Titan and rated them highly
 
 The solution seemed obvious: the ranker needs to diversify the selection at franchise level just like it was doing already with genres. We need to group together titles of a particular franchise and assign them a `franchise_id` that uniquely identifies all the titles. We can then filter repetition by tracking the `franchise_id`. But another problem arises: how do you know that two particular anime belong to the same franchise? Text search is flaky, and might lead to high false negatives.
 
-Enter `related_entries`. This field already existed in the dataset. This is essentially a list of titles that are related to the current titles. The relation might be one of `sequel`, `prequel`, `side_story`, etc. 
+Enter `related_entries`. This field has already existed in the dataset. This is essentially a list of titles that are related to the current titles. The relation might be one of `sequel`, `prequel`, `side_story`, etc. 
 
 ![related entries](/anime-recommendation-system/related_entries.png)
 
