@@ -221,6 +221,8 @@ Enter `related_entries`. This field has already existed in the dataset. This is 
 
 ![related entries](/anime-recommendation-system/related_entries.png)
 
+(the illustration only has single direct edges, the actual dataset has reverse directed edges as well (i.e., prequel-sequel edges both exist between nodes))
+
 This is essentially a [connected components](https://leetcode.com/problems/count-the-number-of-complete-components/description/) problem. The relations are edges between two titles. We have a graph in our hand. We need to isolate the subgraphs (components) and assign all the nodes within that subgraph a particular `franchise_id`. I chose to go with a [DSU](https://en.wikipedia.org/wiki/Disjoint-set_data_structure) (disjoint set union) approach.
 
 ```py
