@@ -20,6 +20,7 @@ export const DATA = {
     "React",
     "Node.js",
     "Postgres",
+    "NATS",
     "Docker",
     "Git",
     "Java",
@@ -103,7 +104,6 @@ export const DATA = {
     },
   ],
   education: [
-    // Converted from education YAML
     {
       school: "Adani University",
       href: "https://adaniuni.ac.in",
@@ -113,21 +113,18 @@ export const DATA = {
       end: "2027",
       grade: {
         scale: "CGPA",
-        achieved: 9.3,
+        achieved: 9.2,
         outOf: 10,
       },
-      courses: {
-        showGrades: true,
-        collapseAfter: 3,
-        items: [
-          { name: "Data Structures and Algorithm", achieved: 4, outOf: 4 },
-          { name: "Frontend Web Development", achieved: 4, outOf: 4 },
-          { name: "Python Programming", achieved: 4, outOf: 4 },
-        ],
-      },
+      coursework: [
+        "Machine Learning",
+        "Distributed Systems",
+        "Cybersecurity",
+        "Cloud Computing",
+      ],
       extracurriculars: [
         'Conducted a session on "Browser Automation with Selenium" with an audience of 60+ people on behalf of the coding club.',
-        "Won a Gold medal in Carrom during the cultural fest.",
+        // "Won a Gold medal in Carrom during the cultural fest.",
       ],
     },
     // {
@@ -424,6 +421,72 @@ export const DATA = {
       image: "",
     },
     {
+      title: "cartostrophe",
+      dates: "April 2026",
+      href: "https://github.com/shravanasati/cartostrophe",
+      description:
+        "An intelligent shopping assistant for mothers, designed to convert voice memos and natural language queries into a curated shopping cart.",
+      technologies: ["python", "fastapi", "qdrant", "react"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/cartostrophe",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "/projects/cartostrophe.png",
+    },
+    {
+      title: "zola",
+      dates: "July 2026",
+      href: "https://github.com/shravanasati/zola",
+      description: "High-performance ASCII media engine in modern C++.",
+      technologies: [
+        "c++",
+        "cli",
+        "ascii",
+      ],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/zola",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "/projects/zola.png",
+    },
+    {
+      title: "elara",
+      dates: "April 2025 - May 2025",
+      href: "",
+      description:
+      "A CLI tool to convert Jupyter notebooks into pretty HTML documents. Also features a VSCode extension.",
+      technologies: ["python", "jupyter", "jinja"],
+      links: [
+        {
+          type: "Github",
+          href: "https://github.com/shravanasati/elara",
+          icon: <Icons.github className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
+      title: "ananke",
+      dates: "Jan 2025",
+      href: "",
+      description: "A HTML to markdown converter.",
+      technologies: ["go", "html", "md"],
+      links: [
+        {
+          type: "GitHub",
+          href: "https://github.com/shravanasati/ananke",
+          icon: <Icons.globe className="size-3" />,
+        },
+      ],
+      image: "",
+    },
+    {
       title: "titan-url",
       dates: "May 2021",
       href: "https://titanurl.vercel.app",
@@ -471,37 +534,6 @@ export const DATA = {
         },
       ],
       image: "/projects/emozi.png",
-    },
-    {
-      title: "elara",
-      dates: "April 2025 - May 2025",
-      href: "",
-      description:
-        "A CLI tool to convert Jupyter notebooks into pretty HTML documents. Also features a VSCode extension.",
-      technologies: ["python", "jupyter", "jinja"],
-      links: [
-        {
-          type: "Github",
-          href: "https://github.com/shravanasati/elara",
-          icon: <Icons.github className="size-3" />,
-        },
-      ],
-      image: "",
-    },
-    {
-      title: "ananke",
-      dates: "Jan 2025",
-      href: "",
-      description: "A HTML to markdown converter.",
-      technologies: ["go", "html", "md"],
-      links: [
-        {
-          type: "GitHub",
-          href: "https://github.com/shravanasati/ananke",
-          icon: <Icons.globe className="size-3" />,
-        },
-      ],
-      image: "",
     },
     {
       title: "crusade",
@@ -615,7 +647,8 @@ export const DATA = {
       title: "provisionary",
       dates: "Feb 2026",
       href: "",
-      description: "An automated Kubernetes-based platform to provision and manage WooCommerce stores using Helm charts. ",
+      description:
+        "An automated Kubernetes-based platform to provision and manage WooCommerce stores using Helm charts. ",
       technologies: ["go", "kubernetes"],
       links: [
         {

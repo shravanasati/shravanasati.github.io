@@ -121,6 +121,11 @@ export default function Page() {
                 title={education.school}
                 subtitle={education.degree}
                 period={`${education.start} - ${education.end}`}
+                description={[
+                  `${education.grade.scale}: ${education.grade.achieved}/${education.grade.outOf}`,
+                  `Relevant coursework: ${education.coursework.join(", ")}`,
+                  ...(education.extracurriculars ?? []),
+                ]}
               />
             </BlurFade>
           ))}
